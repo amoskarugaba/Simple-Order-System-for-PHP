@@ -21,20 +21,21 @@
 
 			<h2>Order Form</h2>
 
-			<table>
-				<thead>
-					<tr>
-						<th>SKU</th><th>Name</th><th>Price</th><th>Quantity</th>
-					</tr>
-				</thead>
-				<tbody>
-					<?php foreach $orders->getProducts() as $product { ?>
-					<tr>
-						<td><?php echo $product->sku; ?></td><td><?php echo $product->product_name; ?></td><td>£<?php echo $product->price; ?></td><td><input id="<?php echo $product->sku; ?>" type="number" /></td>
-					</tr>
-					<?php } ?>
-				</tbody>
-			</table>
+			<form action="test_process.php" method="post">
+				<table>
+					<thead>
+						<tr>
+							<th>SKU</th><th>Name</th><th>Price</th><th>Quantity</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td><input type="text" name="sku" placeholder="sku" /></td><td><input type="text" name="product_name" placeholder="product_name" /></td><td><input type="text" name="price" placeholder="price" /></td><td><input type="number" name="quantity" /></td>
+						</tr>
+					</tbody>
+				</table>
+				<button type="submit">Go!</button>
+			</form>
 
 		</section>
 
