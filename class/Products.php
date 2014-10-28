@@ -25,7 +25,7 @@ class Products {
 	public function newProduct($sku, $product_name, $price, $stock_quantity){
 		$stock_quantity = (int)$stock_quantity;
 		try {
-			$query = $this->db-prepare('INSERT INTO `products` (sku, product_name, price, stock_quantity)
+			$query = $this->db->prepare('INSERT INTO `products` (sku, product_name, price, stock_quantity)
 				VALUES (:sku, :product_name, :price, :stock_quantity)
 			');
 

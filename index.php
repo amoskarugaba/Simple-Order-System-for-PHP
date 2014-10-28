@@ -1,5 +1,6 @@
 <?php
 require('private/config.php');
+require('private/restricted.php');
 include('template/header.php');
 ?>
 
@@ -7,26 +8,7 @@ include('template/header.php');
 
 		<section>
 
-			<h2>Register</h2>
-
-			<form action="register.php" method="post">
-				<input type="email" name="email" placeholder="Username (your email address)" />
-				<input type="password" name="password" placeholder="Password" />
-				<button type="submit">Register</button>
-			</form>
-
-
-		</section>
-
-		<section>
-
-			<h2>Login</h2>
-
-			<form action="login.php" method="post">
-				<input type="email" name="email" placeholder="Username (your email address)" />
-				<input type="password" name="password" placeholder="Password" />
-				<button type="submit">Login</button>
-			</form>
+			<h2>HIIIIIi</h2>
 
 		</section>
 

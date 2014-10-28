@@ -1,7 +1,7 @@
 <?php
 require('private/config.php');
 require('private/restricted.php');
-require('..class/Products.php');
+require('class/Products.php');
 
 $products = new CyanideSystems\Products();
 
@@ -21,7 +21,7 @@ include('template/header.php');
 					</tr>
 				</thead>
 				<tbody>
-					<?php foreach $products->getProducts() as $product { ?>
+					<?php foreach($products->getProducts() as $product){ ?>
 					<tr>
 						<td><?php echo $product->sku; ?></td><td><?php echo $product->product_name; ?></td><td>&pound;<?php echo $product->price; ?></td><td><input id="<?php echo $product->sku; ?>" type="number" /></td>
 					</tr>

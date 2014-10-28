@@ -1,6 +1,6 @@
 <?php
-require('private/config.php');
-require('private/restricted.php');
+require('../private/config.php');
+require('../private/restricted.php');
 include('template/header.php');
 ?>
 
@@ -20,8 +20,8 @@ include('template/header.php');
 				<label for="price">Product Price</label>
 				<input type="number" id="price" name="price" step="0.01" placeholder="Product price" />
 
-				<label for="quantity">Quantity</label>
-				<input type="number" id="quantity" name="quantity" step="1" placeholder="Stock quantity" value="10000" />
+				<label for="stock_quantity">Quantity</label>
+				<input type="number" id="stock_quantity" name="stock_quantity" step="1" placeholder="Stock quantity" value="10000" />
 
 				<button type="submit">Submit New Product</button>
 			</form>

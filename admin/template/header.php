@@ -5,8 +5,7 @@
 	<title>Simple Order System for PHP</title>
 	<meta name="description" content="Example usage of the Simple Order System for PHP" />
 	<meta name="author" content="Elliot J. Reed" />
-	<link rel="stylesheet" href="css/tables.css" />
-
+	<link rel="stylesheet" href="../css/tables.css" />
 </head>
 
 <body>

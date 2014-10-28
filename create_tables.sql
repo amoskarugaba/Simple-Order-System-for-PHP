@@ -22,6 +22,14 @@ CREATE TABLE `customer_details` (
 	PRIMARY KEY (customer_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+CREATE TABLE `products` (
+	sku VARCHAR(30) NOT NULL,
+	product_name VARCHAR(255) NOT NULL,
+	price DECIMAL(10, 2) NOT NULL,
+	stock_quantity INT(11) NOT NULL DEFAULT 0,
+	PRIMARY KEY (sku)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 CREATE TABLE `invoice_main` (
 	invoice_id INT(11) NOT NULL AUTO_INCREMENT,
 	date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
