@@ -1,19 +1,12 @@
-<!DOCTYPE html>
-<html lang="en-GB">
-<head>
-	<meta charset="utf-8" />
-	<title>Order Form for PHP</title>
-	<meta name="author" content="Elliot J. Reed" />
-	<meta name="description" content="A simple ordering system for PHP." />
-	<link rel="stylesheet" href="css/tables.css" />
-</head>
+<?php
+require('private/config.php');
+require('private/restricted.php');
+require('..class/Products.php');
 
-<body>
+$products = new CyanideSystems\Products();
 
-	<header role="banner">
-		<h1>Order Form for PHP</h1>
-		<p>A simple ordering system for PHP.</p>
-	</header>
+include('template/header.php');
+?>
 
 	<main role="main">
 
@@ -28,9 +21,9 @@
 					</tr>
 				</thead>
 				<tbody>
-					<?php foreach $orders->getProducts() as $product { ?>
+					<?php foreach $products->getProducts() as $product { ?>
 					<tr>
-						<td><?php echo $product->sku; ?></td><td><?php echo $product->product_name; ?></td><td>£<?php echo $product->price; ?></td><td><input id="<?php echo $product->sku; ?>" type="number" /></td>
+						<td><?php echo $product->sku; ?></td><td><?php echo $product->product_name; ?></td><td>&pound;<?php echo $product->price; ?></td><td><input id="<?php echo $product->sku; ?>" type="number" /></td>
 					</tr>
 					<?php } ?>
 				</tbody>
@@ -42,5 +35,5 @@
 
 	<script src="js/responsive_tables.min.js"></script>
 
-</body>
-</html>
+<?php
+include('template/footer.php');

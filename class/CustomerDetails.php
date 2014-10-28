@@ -1,6 +1,8 @@
 <?php
 
-namespace;
+namespace CyanideSystems;
+
+use \PDO;
 
 class CustomerDetails {
 
@@ -9,7 +11,7 @@ class CustomerDetails {
 	}
 
 	public function newCustomer($email,$firstname,$lastname,$company,$address1,$address2,$town,$county,$postcode,$phone,$notes){
-		if(validateEmail($email)){
+		if($this->validateEmail($email)){
 			if($this->emailAvailable($email)){
 				$query = $this->db->prepare('INSERT INTO `customer_details`
 					(email, firstname, lastname, company, address1, address2, town, county, postcode, phone, notes)
@@ -73,7 +75,7 @@ class CustomerDetails {
 		');
 		$query->bindValue(':email', $email, PDO::PARAM_STR);
 		$query->execute();
-		if(query->rowCount() > 0){
+		if($query->rowCount() > 0){
 			return false;
 		} else {
 			return true;
