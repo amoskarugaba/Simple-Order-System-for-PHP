@@ -8,7 +8,7 @@ include('template/header.php');
 
 		<section>
 
-			<h2>HIIIIIi</h2>
+			<h2>Main Dashboard</h2>
 
 		</section>
 
