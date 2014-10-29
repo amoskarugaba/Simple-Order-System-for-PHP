@@ -3,6 +3,8 @@
 ## Overview
 Simple Login for PHP does pretty much what it says: it's a lightweight order system for ordering products. It's going to be used for trade accounts where it will generate pro-formas, then invoices as required, and more stuff that I've not decided yet.
 
+The aim of this project is to keep things as customisable as possible, in that there is (and will be) no templating system or complex frontend design, and should be easily integrated into an existing site.
+
 User messages, error messages, etc. are all configured in private/config.php.
 
 ## Requirements
