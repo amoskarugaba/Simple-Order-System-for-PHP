@@ -1,7 +1,20 @@
 <?php
 require('private/config.php');
+require('class/Login.php');
+
+$email = $_POST['email'];
+$password = $_POST['password'];
+
+$signup = new CyanideSystems\Login();
+
+// Directs back to registration.php if there's an error
+if(!$signup->registerUser($email, $password)){
+	header('Location: register.php?e=' . urlencode($signup->getErrors()));
+}
+
 require('private/restricted.php');
 include('template/header.php');
+
 ?>
 
 	<main role="main">
@@ -10,7 +23,7 @@ include('template/header.php');
 
 			<h2>Register</h2>
 
-			<form id="customerform" action="ajax/newCustomer.php" method="post">
+			<form id="customerform" action="registration_success.php" method="post" autocomplete="on">
 
 				<label for="name">Company Contact's First Name</label>
 				<input type="text" id="firstname" name="firstname" placeholder="First Name" required="required" autofocus="autofocus" />
@@ -317,7 +330,7 @@ include('template/header.php');
 				<input type="tel" name="phone" id="phone" placeholder="Telephone Number" required="required" />
 
 				<label for="email">Email Address</label>
-				<input type="email" name="email" id="email" placeholder="Email Address" required="required" />
+				<input type="email" name="email" id="email" placeholder="Email Address" value="<?php echo $_SESSION['email']; ?>" disabled="disabled" />
 
 				<label for="notes">Additional Notes</label>
 				<textarea name="notes" id="notes" form="customerform" placeholder="Enter additional notes here if required..."></textarea>

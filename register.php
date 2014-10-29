@@ -1,5 +1,10 @@
 <?php
 require('private/config.php');
+if(isset($_GET['e'])){
+	$error = '<p>' . urldecode($_GET['e']) . '</p>';
+} else {
+	$error = null;
+}
 include('template/header.php');
 ?>
 
@@ -9,11 +14,11 @@ include('template/header.php');
 
 			<h2>Register</h2>
 
-			<div id="response"></div>
+			<?php echo $error; ?>
 
-			<form name="register">
-				<input type="email" id="email" placeholder="Username (your email address)" />
-				<input type="password" id="password" placeholder="Password" />
+			<form name="register" action="register_details.php" method="post">
+				<input type="email" id="email" name="email" placeholder="Username (your email address)" />
+				<input type="password" id="password" name="password" placeholder="Password" />
 				<button type="submit">Register</button>
 			</form>
 
@@ -21,8 +26,6 @@ include('template/header.php');
 		</section>
 
 	</main>
-
-	<script src="js/registerLogin.js"></script>
 
 <?php
 include('template/footer.php');

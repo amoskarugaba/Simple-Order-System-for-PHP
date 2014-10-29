@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function(){
 function registerLogin(a){
 
 	var email = encodeURIComponent(document.getElementById("email").value);
-	var lastName = encodeURIComponent(document.getElementById("password").value);
+	var password = encodeURIComponent(document.getElementById("password").value);
 
 	// Checks if fields are filled-in or not, returns response "<p>Please enter your details.</p>" if not.
 	if(email == "" || password == ""){

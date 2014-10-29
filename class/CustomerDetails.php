@@ -8,6 +8,7 @@ class CustomerDetails {
 
 	public function __construct(){
 		$this->db = new PDO(DB_TYPE . ':host=' . DB_HOST . ';dbname=' . DB_NAME, DB_USER, DB_PASS, array(PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ, PDO::ATTR_ERRMODE => PDO::ERRMODE_WARNING));
+		$this->error = '';
 	}
 
 	public function newCustomer($email,$firstname,$lastname,$company,$address1,$address2,$town,$county,$postcode,$phone,$notes){
@@ -29,15 +30,15 @@ class CustomerDetails {
 				$query->bindValue(':phone', $phone, PDO::PARAM_STR);
 				$query->bindValue(':notes', $notes, PDO::PARAM_STR);
 				if($query->execute()){
-					return REGISTRATION_SUCCESSFUL; // Returns this if all is successful
+					return true; // Returns this if all is successful
 				} else {
-					return REGISTRATION_DATABASE_INSERT_ERROR; // Returns this if registration NOT successful due to database insert error
+					$this->error .= REGISTRATION_DATABASE_INSERT_ERROR; // Returns this if registration NOT successful due to database insert error
 				}
 			} else {
-				return REGISTRATION_EMAIL_UNAVAILABLE_ERROR; // Returns this if the email address is already in the database
+				$this->error .= REGISTRATION_EMAIL_UNAVAILABLE_ERROR; // Returns this if the email address is already in the database
 			}
 		} else {
-			return RESGISTRATION_EMAIL_NOT_VALID; // Returns this if the email address doesn't pass validation (ie. it doesn't look like a real email address)
+			$this->error .= RESGISTRATION_EMAIL_NOT_VALID; // Returns this if the email address doesn't pass validation (ie. it doesn't look like a real email address)
 		}
 	}
 
@@ -80,6 +81,10 @@ class CustomerDetails {
 		} else {
 			return true;
 		}
+	}
+
+	public function getErrors(){
+		return $this->error;
 	}
 
 }

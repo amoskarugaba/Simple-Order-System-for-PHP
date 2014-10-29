@@ -8,4 +8,4 @@ $password = $_POST['password'];
 $signup = new CyanideSystems\Login();
 
 // registerUser() returns message as defined in private/config.php
-echo $signup->registerUser($email,$password);
+echo $signup->registerUser($email, $password);
