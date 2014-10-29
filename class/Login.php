@@ -33,7 +33,7 @@ class Login {
 					// $_SESSION['check'] checks against the $check variable in 'private/restricted.php'
 					$_SESSION['check'] = hash('sha256', $radd . $hxff . $agent);
 					$_SESSION['customer_id'] = $this->getCustomerID($email);
-					$_SESSION['email'] = htmlspecialchars($email);
+					$_SESSION['email'] = $email;
 					return true;
 				} else {
 					$this->error .= REGISTRATION_DATABASE_INSERT_ERROR; // Returns this if registration NOT successful due to database insert error
@@ -121,6 +121,7 @@ class Login {
 			$hxff = getenv('HTTP_X_FORWARDED_FOR');
 			$agent = $_SERVER['HTTP_USER_AGENT'];
 			// $_SESSION['check'] checks against the $check variable in 'private/restricted.php'
+			session_start();
 			$_SESSION['check'] = hash('sha256', $radd . $hxff . $agent);
 			$_SESSION['customer_id'] = $this->getCustomerID($email);
 			$_SESSION['email'] = htmlspecialchars($email);

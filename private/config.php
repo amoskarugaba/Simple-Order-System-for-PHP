@@ -1,6 +1,4 @@
 <?php
-// Include 'private/config.php' at the beginning of each PHP script, session_start() is required for all login related activity
-session_start();
 
 // CONFIGURATION SETTINGS (Global)
 
