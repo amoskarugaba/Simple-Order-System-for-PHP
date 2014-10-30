@@ -26,6 +26,7 @@ CREATE TABLE `products` (
 	sku VARCHAR(30) NOT NULL,
 	product_name VARCHAR(255) NOT NULL,
 	price DECIMAL(10, 2) NOT NULL,
+	vat_rate DECIMAL(5, 2) NOT NULL DEFAULT 0.00,
 	stock_quantity INT(11) NOT NULL DEFAULT 0,
 	PRIMARY KEY (sku)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;

@@ -20,8 +20,11 @@ include('template/header.php');
 				<label for="price">Product Price</label>
 				<input type="number" id="price" name="price" step="0.01" placeholder="Product price" />
 
+				<label for="vat_rate">VAT Rate</label>
+				<input type="number" id="vat_rate" name="vat_rate" step="0.1" value="20.00" />
+
 				<label for="stock_quantity">Quantity</label>
-				<input type="number" id="stock_quantity" name="stock_quantity" step="1" placeholder="Stock quantity" value="10000" />
+				<input type="number" id="stock_quantity" name="stock_quantity" step="1" value="10000" />
 
 				<button type="submit">Submit New Product</button>
 			</form>

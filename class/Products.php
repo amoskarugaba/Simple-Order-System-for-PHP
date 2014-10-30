@@ -11,7 +11,7 @@ class Products {
 
 	public function getProducts(){
 		try {
-			$query = $this->db->query('SELECT sku, product_name, price, stock_quantity
+			$query = $this->db->query('SELECT sku, product_name, price, vat_rate, stock_quantity
 				FROM `products`
 				WHERE stock_quantity > 0
 			');
@@ -22,16 +22,17 @@ class Products {
 		}
 	}
 
-	public function newProduct($sku, $product_name, $price, $stock_quantity){
+	public function newProduct($sku, $product_name, $price, $vat_rate, $stock_quantity){
 		$stock_quantity = (int)$stock_quantity;
 		try {
-			$query = $this->db->prepare('INSERT INTO `products` (sku, product_name, price, stock_quantity)
-				VALUES (:sku, :product_name, :price, :stock_quantity)
+			$query = $this->db->prepare('INSERT INTO `products` (sku, product_name, price, vat_rate, stock_quantity)
+				VALUES (:sku, :product_name, :price, :vat_rate, :stock_quantity)
 			');
 
 			$query->bindValue(':sku', $sku, PDO::PARAM_STR);
 			$query->bindValue(':product_name', $product_name, PDO::PARAM_STR);
 			$query->bindValue(':price', $price, PDO::PARAM_STR);
+			$query->bindValue(':vat_rate', $vat_rate, PDO::PARAM_STR);
 			$query->bindValue(':stock_quantity', $stock_quantity, PDO::PARAM_INT);
 
 			$query->execute();
@@ -42,12 +43,13 @@ class Products {
 		}
 	}
 
-	public function editProduct($sku, $product_name, $price, $stock_quantity){
+	public function editProduct($sku, $product_name, $price, $vat_rate, $stock_quantity){
 		$stock_quantity = (int)$stock_quantity;
 		try {
 			$query = $this->db-prepare('UPDATE `products`
 				SET product_name = :product_name,
 					price = :price,
+					vat_rate = :vat_rate,
 					stock_quantity = :stock_quantity
 				WHERE sku = :sku
 			');
@@ -55,6 +57,7 @@ class Products {
 			$query->bindValue(':sku', $sku, PDO::PARAM_STR);
 			$query->bindValue(':product_name', $product_name, PDO::PARAM_STR);
 			$query->bindValue(':price', $price, PDO::PARAM_STR);
+			$query->bindValue(':vat_rate', $vat_rate, PDO::PARAM_STR);
 			$query->bindValue(':stock_quantity', $stock_quantity, PDO::PARAM_INT);
 
 			$query->execute();
