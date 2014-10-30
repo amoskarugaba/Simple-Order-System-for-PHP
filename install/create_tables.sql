@@ -44,6 +44,8 @@ CREATE TABLE `invoice_main` (
 CREATE TABLE `invoice_lines` (
 	line_id INT(11) NOT NULL AUTO_INCREMENT,
 	date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	product_sku VARCHAR(20) NOT NULL,
+	quantity INT(11) NOT NULL,
 	line_price DECIMAL(10, 2) NOT NULL,
 	invoice_id INT(11) NOT NULL,
 	PRIMARY KEY (line_id),
@@ -65,6 +67,7 @@ CREATE TABLE `proforma_lines` (
 	line_id INT(11) NOT NULL AUTO_INCREMENT,
 	date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	product_sku VARCHAR(20) NOT NULL,
+	quantity INT(11) NOT NULL,
 	line_price DECIMAL(10, 2) NOT NULL,
 	customer_id INT(11) NOT NULL,
 	proforma_id INT(11) NOT NULL,

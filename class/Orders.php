@@ -28,17 +28,45 @@ class Orders {
 
 			$proforma_id = $this->db->lastInsertId();
 
-			$query = $this->db->prepare('INSERT INTO `proforma_lines` (product_sku, customer_id, proforma_id)
-				VALUES (:product_sku, :customer_id, :proforma_id)
+			$query = $this->db->prepare('INSERT INTO `proforma_lines` (product_sku, quantity, customer_id, proforma_id)
+				VALUES (:product_sku, :quantity, :customer_id, :proforma_id)
 			');
 
 			$query->bindValue(':customer_id', $this->customer_id, PDO::PARAM_INT); // bindValue as the customer_id will remain the same
 			$query->bindParam(':product_sku', $product_sku, PDO::PARAM_STR); // bindParam as the proforma_line will be different for each line
+			$query->bindParam(':quantity', $quantity, PDO::PARAM_STR); // bindParam as the proforma_line will be different for each line
 			$query->bindValue(':proforma_id', $proforma_id, PDO::PARAM_INT); // bindValue as the proforma_id will remain the same
 
-			foreach($proforma_array as $product_sku){ //may be issues here yo
+			foreach($proforma_array as $product_sku=>$quantity){
 				$query->execute();
 			}
+
+			// UPDATEs price from `products` table
+			$query = $this->db->prepare('UPDATE `proforma_lines`
+				INNER JOIN `products`
+				ON `products`.sku = `proforma_lines`.product_sku
+				SET `proforma_lines`.line_price = `products`.price
+				WHERE `proforma_lines`.proforma_id = :proforma_id
+			');
+
+			$query->bindValue(':proforma_id', $proforma_id);
+			$query->execute();
+
+			$query = $this->db->prepare('UPDATE `proforma_main` m
+				INNER JOIN (
+					SELECT customer_id, proforma_id, SUM(line_price*quantity) as order_total
+					FROM `proforma_lines`
+					WHERE proforma_id = :proforma_id
+					AND customer_id = :customer_id
+				) l ON m.proforma_id = l.proforma_id
+				SET m.order_total = l.order_total
+				WHERE l.proforma_id = :proforma_id
+				AND l.customer_id = :customer_id
+			');
+
+			$query->bindValue(':proforma_id', $proforma_id);
+			$query->bindValue(':customer_id', $this->customer_id);
+			$query->execute();
 
 			$this->db->commit();
 
