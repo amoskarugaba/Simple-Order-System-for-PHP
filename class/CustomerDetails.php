@@ -11,13 +11,14 @@ class CustomerDetails {
 		$this->error = '';
 	}
 
-	public function newCustomer($email,$firstname,$lastname,$company,$address1,$address2,$town,$county,$postcode,$phone,$notes){
+	public function newCustomer($customer_id, $email, $firstname, $lastname, $company, $address1, $address2, $town, $county, $postcode, $phone, $notes){
 		if($this->validateEmail($email)){
 			if($this->emailAvailable($email)){
 				$query = $this->db->prepare('INSERT INTO `customer_details`
-					(email, firstname, lastname, company, address1, address2, town, county, postcode, phone, notes)
-					VALUES (:email, :firstname, :lastname, :company, :address1, :address2, :town, :county, :postcode, :phone, :notes)
+					(customer_id, email, firstname, lastname, company, address1, address2, town, county, postcode, phone, notes)
+					VALUES (:customer_id, :email, :firstname, :lastname, :company, :address1, :address2, :town, :county, :postcode, :phone, :notes)
 				');
+				$query->bindValue(':customer_id', $customer_id, PDO::PARAM_INT);
 				$query->bindValue(':email', $email, PDO::PARAM_STR);
 				$query->bindValue(':firstname', $firstname, PDO::PARAM_STR);
 				$query->bindValue(':lastname', $lastname, PDO::PARAM_STR);

@@ -43,6 +43,7 @@ class Orders {
 			$this->db->commit();
 
 			return true;
+			//return $proforma_id;
 		} catch (PDOException $e) {
 			$this->db->rollback();
 			ExceptionErrorHandler($e);

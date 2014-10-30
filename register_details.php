@@ -12,9 +12,7 @@ if(!$signup->registerUser($email, $password)){
 	header('Location: register.php?e=' . urlencode($signup->getErrors()));
 }
 
-require('private/restricted.php');
 include('template/header.php');
-
 ?>
 
 	<main role="main">
@@ -330,7 +328,7 @@ include('template/header.php');
 				<input type="tel" name="phone" id="phone" placeholder="Telephone Number" required="required" />
 
 				<label for="email">Email Address</label>
-				<input type="email" name="email" id="email" placeholder="Email Address" value="<?php echo $_SESSION['email']; ?>" disabled="disabled" />
+				<input type="email" name="email" id="email" value="<?php echo $_SESSION['email']; ?>" readonly="readonly" />
 
 				<label for="notes">Additional Notes</label>
 				<textarea name="notes" id="notes" form="customerform" placeholder="Enter additional notes here if required..."></textarea>

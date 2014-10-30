@@ -19,7 +19,7 @@ if(isset($_GET['e'])){
 
 			<form name="login" action="attempting_login.php" method="post">
 				<input type="email" id="email" name="email" placeholder="Username (your email address)" required="required" />
-				<input type="password" id="password" name="password" placeholder="Password" required="required" />
+				<input type="password" id="password" name="password" placeholder="Password" minlength="8" maxlength="64" required="required" />
 				<button type="submit">Login</button>
 			</form>
 

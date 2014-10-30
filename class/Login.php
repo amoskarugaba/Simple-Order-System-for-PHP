@@ -33,11 +33,13 @@ class Login {
 					$hxff = getenv('HTTP_X_FORWARDED_FOR');
 					$agent = $_SERVER['HTTP_USER_AGENT'];
 					// $_SESSION['check'] checks against the $check variable in 'private/restricted.php'
+					session_start();
 					$_SESSION['check'] = hash('sha256', $radd . $hxff . $agent);
 					$_SESSION['customer_id'] = $this->getCustomerID($email);
 					$_SESSION['email'] = $email;
 					return true;
 				} else {
+					error_log('Database Error: Failed to INSERT registration details into `site_logins`', 0);
 					$this->error .= REGISTRATION_DATABASE_INSERT_ERROR; // Returns this if registration NOT successful due to database insert error
 					return false;
 				}
@@ -85,7 +87,7 @@ class Login {
 		if($mail->send()){
 			return true;
 		} else {
-			// echo 'Mailer Error: ' . $mail->ErrorInfo;
+			error_log('PHPMailer Error: ' . $mail->ErrorInfo, 0);
 			return false;
 		}
 	}
@@ -126,7 +128,7 @@ class Login {
 			session_start();
 			$_SESSION['check'] = hash('sha256', $radd . $hxff . $agent);
 			$_SESSION['customer_id'] = $this->getCustomerID($email);
-			$_SESSION['email'] = htmlspecialchars($email);
+			$_SESSION['email'] = $email;
 			return true;
 		} else {
 			$this->error .= INCORRECT_LOGIN_CREDENTIALS;
@@ -140,20 +142,28 @@ class Login {
 			WHERE email = :email
 		');
 		$query->bindValue(':email', $email, PDO::PARAM_STR);
-		$query->execute();
-		$check = $query->fetch();
-		return $check->hash;
+		if($query->execute()){
+			$check = $query->fetch();
+			return $check->hash;
+		} else {
+			error_log('Database Error: Failed to SELECT hash from `site_logins`', 0);
+			return false;
+		}
 	}
 
 	private function getCustomerID($email){
-		$query = $this->db->prepare('SELECT ID
+		$query = $this->db->prepare('SELECT customer_id
 			FROM `site_logins`
 			WHERE email = :email
 		');
 		$query->bindValue(':email', $email, PDO::PARAM_STR);
-		$query->execute();
-		$check = $query->fetch();
-		return $check->ID;
+		if($query->execute()){
+			$check = $query->fetch();
+			return $check->customer_id;
+		} else {
+			error_log('Database Error: Failed to SELECT ID from `site_logins`', 0);
+			return false;
+		}
 	}
 
 	// Return any errors
@@ -174,6 +184,7 @@ class Login {
 			if($query->execute()){
 				return true;
 			} else {
+				error_log('Database Error: Failed to UPDATE hash in `site_logins` for password_needs_rehash', 0);
 				return false;
 			}
 		} else {

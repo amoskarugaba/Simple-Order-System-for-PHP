@@ -15,6 +15,7 @@
 		<h1>Simple Order System for PHP</h1>
 		<nav>
 			<a href="index.php">Home</a>
+			<a href="order_form.php">Order Form</a>
 			<a href="logout.php">Logout</a>
 		</nav>
 	</header>

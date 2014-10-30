@@ -1,13 +1,12 @@
 CREATE TABLE `site_logins` (
-	ID INT(11) NOT NULL AUTO_INCREMENT,
+	customer_id INT(11) NOT NULL AUTO_INCREMENT,
 	email VARCHAR(255) NOT NULL,
 	hash VARCHAR(255) NOT NULL,
-	PRIMARY KEY (ID)
+	PRIMARY KEY (customer_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-
 CREATE TABLE `customer_details` (
-	customer_id INT(11) NOT NULL AUTO_INCREMENT,
+	customer_id INT(11) NOT NULL,
 	email VARCHAR(255) NOT NULL,
 	firstname VARCHAR(100) NOT NULL,
 	lastname VARCHAR(100) NOT NULL,
@@ -19,7 +18,8 @@ CREATE TABLE `customer_details` (
 	postcode VARCHAR(9) NOT NULL,
 	phone VARCHAR(15) NOT NULL,
 	notes TEXT NOT NULL,
-	PRIMARY KEY (customer_id)
+	PRIMARY KEY (customer_id),
+	FOREIGN KEY (customer_id) REFERENCES `site_logins`(customer_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `products` (
@@ -50,7 +50,6 @@ CREATE TABLE `invoice_lines` (
 	FOREIGN KEY (invoice_id) REFERENCES `invoice_main`(invoice_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-
 CREATE TABLE `proforma_main` (
 	proforma_id INT(11) NOT NULL AUTO_INCREMENT,
 	date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
@@ -61,7 +60,6 @@ CREATE TABLE `proforma_main` (
 	PRIMARY KEY (proforma_id),
 	FOREIGN KEY (customer_id) REFERENCES `customer_details`(customer_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
 
 CREATE TABLE `proforma_lines` (
 	line_id INT(11) NOT NULL AUTO_INCREMENT,

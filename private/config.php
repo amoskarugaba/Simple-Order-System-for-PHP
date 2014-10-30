@@ -11,6 +11,8 @@ ini_set('display_errors',1);
 ini_set('display_startup_errors',1);
 error_reporting(-1);
 
+//define('ERRORLOGGING', 0);
+
 // User and Error Messages in Login.php - Edit these to make them a bit more personal to your site / end users. If you're in the US you may wish to do some hideous 'Americanizationings' to further diminish the value of the English language.
 define('REGISTRATION_SUCCESSFUL_EMAIL_SENT', 'You have successfully registered. You should recieve an email confirming your registration.');
 define('REGISTRATION_SUCCESSFUL_EMAIL_NOT_SENT', 'You have successfully registered, but we were unable to send a confirmation email.');
