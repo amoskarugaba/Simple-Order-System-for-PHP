@@ -41,11 +41,11 @@ class Orders {
 				$query->execute();
 			}
 
-			// UPDATEs price from `products` table
+			// UPDATEs price and VAT rate from `products` table
 			$query = $this->db->prepare('UPDATE `proforma_lines`
 				INNER JOIN `products`
 				ON `products`.sku = `proforma_lines`.product_sku
-				SET `proforma_lines`.line_price = `products`.price
+				SET `proforma_lines`.line_price = `products`.price, `proforma_lines`.vat_rate = `products`.vat_rate
 				WHERE `proforma_lines`.proforma_id = :proforma_id
 			');
 
@@ -54,7 +54,7 @@ class Orders {
 
 			$query = $this->db->prepare('UPDATE `proforma_main` m
 				INNER JOIN (
-					SELECT customer_id, proforma_id, SUM(line_price*quantity) as order_total
+					SELECT customer_id, proforma_id, SUM(line_price*quantity) AS order_total
 					FROM `proforma_lines`
 					WHERE proforma_id = :proforma_id
 					AND customer_id = :customer_id
@@ -103,7 +103,7 @@ class Orders {
 	public function getProformaLines($proforma_id){
 		$proforma_id = (int)$proforma_id;
 		try {
-			$query = $this->db->prepare('SELECT date, product_sku, quantity, line_price
+			$query = $this->db->prepare('SELECT date, product_sku, quantity, line_price, vat_rate
 				FROM proforma_lines
 				WHERE proforma_id = :proforma_id
 				AND customer_id = :customer_id
@@ -119,6 +119,8 @@ class Orders {
 		}
 	}
 
+
+	// TO DO
 	public function createInvoice($proforma_id){
 		$proforma_id = (int)$proforma_id;
 		$this->db->beginTransaction(); // Begin TRANSACTION so that if one query fails, the other will ROLLBACK
@@ -128,7 +130,7 @@ class Orders {
 				FROM `proforma_main`
 				WHERE proforma_id = :proforma_id
 				AND customer_id = :customer_id
-				AND invoiced != 1
+				AND invoiced = 0
 			');
 
 			$query->bindValue(':proforma_id', $proforma_id, PDO::PARAM_INT);

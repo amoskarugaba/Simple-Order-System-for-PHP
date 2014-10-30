@@ -82,7 +82,7 @@ $customer = $customer_details->getCustomerDetails($_SESSION['email']);
 									<td><span><?php echo $proforma_line->quantity; ?></span></td>
 									<td><span><?php echo $proforma_line->product_sku; ?></span></td>
 									<td><span data-prefix>&pound; </span><span><?php echo $proforma_line->line_price; ?></span></td>
-									<td><span>TODO%</span></td>
+									<td><span><?php echo $proforma_line->vat_rate; ?>%</span></td>
 									<td><span data-prefix>&pound; </span><span>TODO</span></td>
 								</tr>
 						<?php } ?>
