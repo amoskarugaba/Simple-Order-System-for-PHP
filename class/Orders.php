@@ -79,18 +79,40 @@ class Orders {
 		}
 	}
 
-	public function getProforma($proforma_id){
+	public function getProformaMain($proforma_id){
 		$proforma_id = (int)$proforma_id;
 		try {
-			$query = $this->db->prepare('SELECT `proforma_main`.discount, `proforma_main`.order_total, `proforma_lines`.product_sku
-				FROM `proforma_main`
-				INNER JOIN `proforma_lines`
-				ON `proforma_main`.proforma_id = `proforma_lines`.proforma_id
-				ORDER BY `proforma_lines`.proforma_id
-				WHERE `proforma_main`.customer_id = :customer_id
+			$query = $this->db->prepare('SELECT proforma_id, date, discount, order_total
+				FROM proforma_main
+				WHERE invoiced = 0
+				AND proforma_id = :proforma_id
+				AND customer_id = :customer_id
+				ORDER BY date DESC
+				LIMIT 1
 			');
+			$query->bindValue(':proforma_id', $proforma_id, PDO::PARAM_INT);
 			$query->bindValue(':customer_id', $this->customer_id, PDO::PARAM_INT);
-			return $query->execute();
+			$query->execute();
+			return $query->fetch();
+		} catch (PDOException $e) {
+			ExceptionErrorHandler($e);
+			return false;
+		}
+	}
+
+	public function getProformaLines($proforma_id){
+		$proforma_id = (int)$proforma_id;
+		try {
+			$query = $this->db->prepare('SELECT date, product_sku, quantity, line_price
+				FROM proforma_lines
+				WHERE proforma_id = :proforma_id
+				AND customer_id = :customer_id
+				ORDER BY line_id DESC
+			');
+			$query->bindValue(':proforma_id', $proforma_id, PDO::PARAM_INT);
+			$query->bindValue(':customer_id', $this->customer_id, PDO::PARAM_INT);
+			$query->execute();
+			return $query->fetchAll();
 		} catch (PDOException $e) {
 			ExceptionErrorHandler($e);
 			return false;
