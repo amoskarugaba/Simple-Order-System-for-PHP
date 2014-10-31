@@ -10,7 +10,7 @@ class Orders {
 	}
 
 	public function getProducts(){
-		$query = $this->db->query('SELECT sku, product_name, price
+		$query = $this->db->query('SELECT sku, product_name, vat_rate, price
 			FROM `products`
 		');
 		return $query->fetchAll();
@@ -119,6 +119,58 @@ class Orders {
 		}
 	}
 
+	public function getUnpaidProformas(){
+		try {
+			$query = $this->db->prepare('SELECT proforma_id, date, discount, order_total
+				FROM `proforma_main`
+				WHERE customer_id = :customer_id
+				AND invoiced = 0
+			');
+			$query->bindValue(':customer_id', $this->customer_id, PDO::PARAM_INT);
+			$query->execute();
+			return $query->fetchAll();
+		} catch (PDOException $e) {
+			$this->db->rollback();
+			ExceptionErrorHandler($e);
+			return false;
+		}
+	}
+
+	public function getPaidProformas(){
+		try {
+			$query = $this->db->prepare('SELECT proforma_id, date, discount, order_total
+				FROM `proforma_main`
+				WHERE customer_id = :customer_id
+				AND invoiced = 1
+			');
+			$query->bindValue(':customer_id', $this->customer_id, PDO::PARAM_INT);
+			$query->execute();
+			return $query->fetchAll();
+		} catch (PDOException $e) {
+			$this->db->rollback();
+			ExceptionErrorHandler($e);
+			return false;
+		}
+	}
+
+	public function cancelProforma($proforma_id){
+		$proforma_id = (int)$proforma_id;
+		try {
+			$query = $this->db->prepare('DELETE FROM `proforma_main`
+				WHERE customer_id = :customer_id
+				AND proforma_id = :proforma_id
+				AND invoiced = 0
+			');
+			$query->bindValue(':customer_id', $this->customer_id, PDO::PARAM_INT);
+			$query->bindValue(':proforma_id', $proforma_id, PDO::PARAM_INT);
+			$query->execute();
+			return true;
+		} catch (PDOException $e) {
+			$this->db->rollback();
+			ExceptionErrorHandler($e);
+			return false;
+		}
+	}
 
 	// TO DO
 	public function createInvoice($proforma_id){

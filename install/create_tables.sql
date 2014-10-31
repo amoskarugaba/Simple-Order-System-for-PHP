@@ -52,6 +52,8 @@ CREATE TABLE `invoice_lines` (
 	invoice_id INT(11) NOT NULL,
 	PRIMARY KEY (line_id),
 	FOREIGN KEY (invoice_id) REFERENCES `invoice_main`(invoice_id)
+	ON DELETE CASCADE
+	ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `proforma_main` (
@@ -76,6 +78,8 @@ CREATE TABLE `proforma_lines` (
 	proforma_id INT(11) NOT NULL,
 	PRIMARY KEY (line_id),
 	FOREIGN KEY (proforma_id) REFERENCES `proforma_main`(proforma_id)
+	ON DELETE CASCADE
+	ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 

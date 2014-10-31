@@ -18,13 +18,13 @@ include('template/header.php');
 				<table>
 					<thead>
 						<tr>
-							<th>SKU</th><th>Name</th><th>Price</th><th>Quantity</th>
+							<th>SKU</th><th>Name</th><th>Price (Ex. VAT)</th><th>VAT Rate</th><th>Quantity</th>
 						</tr>
 					</thead>
 					<tbody>
 						<?php foreach($products->getProducts() as $product){ ?>
 						<tr>
-							<td><?php echo $product->sku; ?></td><td><?php echo $product->product_name; ?></td><td>&pound;<?php echo $product->price; ?></td><td><input id="<?php echo $product->sku; ?>" name="<?php echo $product->sku; ?>" type="number" /></td>
+							<td><?php echo $product->sku; ?></td><td><?php echo $product->product_name; ?></td><td>&pound;<?php echo $product->price; ?></td><td><?php echo $product->vat_rate; ?>%</td><td><input id="<?php echo $product->sku; ?>" name="<?php echo $product->sku; ?>" type="number" /></td>
 						</tr>
 						<?php } ?>
 					</tbody>

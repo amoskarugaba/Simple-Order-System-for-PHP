@@ -1,13 +1,18 @@
 <?php
 require('private/config.php');
 require('private/restricted.php');
+
+if(!isset($_GET['p'])){
+	header('Location: unpaid_proformas.php');
+}
+
+$proforma_id = (int)$_GET['p'];
+
 require('class/Orders.php');
 require('class/CustomerDetails.php');
 
 $customer_details = new CyanideSystems\CustomerDetails();
 $order = new CyanideSystems\Orders($_SESSION['customer_id']);
-
-$proforma_id = 1;
 
 $proforma = $order->getProformaMain($proforma_id);
 
