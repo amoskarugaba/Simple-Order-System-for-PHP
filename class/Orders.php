@@ -119,6 +119,45 @@ class Orders {
 		}
 	}
 
+	public function getInvoiceMain($invoice_id){
+		$invoice_id = (int)$invoice_id;
+		try {
+			$query = $this->db->prepare('SELECT invoice_id, date, discount, order_total
+				FROM invoice_main
+				WHERE invoice_id = :invoice_id
+				AND customer_id = :customer_id
+				ORDER BY date DESC
+				LIMIT 1
+			');
+			$query->bindValue(':invoice_id', $invoice_id, PDO::PARAM_INT);
+			$query->bindValue(':customer_id', $this->customer_id, PDO::PARAM_INT);
+			$query->execute();
+			return $query->fetch();
+		} catch (PDOException $e) {
+			ExceptionErrorHandler($e);
+			return false;
+		}
+	}
+
+	public function getInvoiceLines($invoice_id){
+		$invoice_id = (int)$invoice_id;
+		try {
+			$query = $this->db->prepare('SELECT date, product_sku, quantity, line_price, vat_rate
+				FROM invoice_lines
+				WHERE invoice_id = :invoice_id
+				AND customer_id = :customer_id
+				ORDER BY line_id DESC
+			');
+			$query->bindValue(':invoice_id', $invoice_id, PDO::PARAM_INT);
+			$query->bindValue(':customer_id', $this->customer_id, PDO::PARAM_INT);
+			$query->execute();
+			return $query->fetchAll();
+		} catch (PDOException $e) {
+			ExceptionErrorHandler($e);
+			return false;
+		}
+	}
+
 	public function getUnpaidProformas(){
 		try {
 			$query = $this->db->prepare('SELECT proforma_id, date, discount, order_total
@@ -136,12 +175,11 @@ class Orders {
 		}
 	}
 
-	public function getPaidProformas(){
+	public function getPaidInvoices(){
 		try {
-			$query = $this->db->prepare('SELECT proforma_id, date, discount, order_total
-				FROM `proforma_main`
+			$query = $this->db->prepare('SELECT invoice_id, date, discount, order_total
+				FROM `invoice_main`
 				WHERE customer_id = :customer_id
-				AND invoiced = 1
 			');
 			$query->bindValue(':customer_id', $this->customer_id, PDO::PARAM_INT);
 			$query->execute();
