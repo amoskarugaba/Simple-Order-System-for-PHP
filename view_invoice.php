@@ -10,14 +10,13 @@ $invoice_id = (int)$_GET['i'];
 
 require('class/Customer.php');
 
-$customer_details = new CyanideSystems\OrderSystem\CustomerDetails();
-$order = new CyanideSystems\OrderSystem\Orders($_SESSION['customer_id']);
+$order = new CyanideSystems\OrderSystem\Customer($_SESSION['customer_id']);
 
 $invoice = $order->getInvoiceMain($invoice_id);
 
 $invoice_lines = $order->getInvoiceLines($invoice_id);
 
-$customer = $customer_details->getCustomerDetails();
+$customer = $order->getCustomerDetails();
 
 ?>
 <!doctype html>

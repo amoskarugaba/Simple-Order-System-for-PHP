@@ -5,10 +5,10 @@ require('../class/Admin.php');
 
 $admin = new CyanideSystems\OrderSystem\Admin();
 
-$unpaid_proformas = $admin->getAllUnpaidProformas();
+$unpaid_proformas = $admin->getProformas();
 
 foreach($unpaid_proformas as $proforma){
-	echo '<a href="mark_invoice_paid.php?p=' . $proforma->proforma_id . '&c=' . $proforma->customer_id . '">Mark Proforma Paid"</a>';
+	echo '<a href="mark_invoice_paid.php?p=' . $proforma->proforma_id . '">Mark Proforma Paid"</a>';
 	echo $proforma->date;
 	echo $proforma->discount;
 	echo $proforma->order_total;

@@ -6,7 +6,7 @@ require('class/Customer.php');
 
 $orders = new CyanideSystems\OrderSystem\Customer($_SESSION['customer_id']);
 
-$invoices = $orders->getPaidInvoices();
+$invoices = $orders->getInvoices();
 
 foreach($invoices as $invoice){
 
