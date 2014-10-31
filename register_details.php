@@ -5,7 +5,7 @@ require('class/Login.php');
 $email = $_POST['email'];
 $password = $_POST['password'];
 
-$signup = new CyanideSystems\Login();
+$signup = new CyanideSystems\OrderSystem\Login();
 
 // Directs back to registration.php if there's an error
 if(!$signup->registerUser($email, $password)){

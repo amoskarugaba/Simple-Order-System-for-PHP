@@ -2,7 +2,7 @@
 
 // This class is specific to individual customers by $customer_id (eg. $_SESSION['customer_id']) - ie. customer must be logged in to access any functions
 
-namespace CyanideSystems;
+namespace CyanideSystems\OrderSystem;
 use \PDO;
 class Customer {
 
@@ -136,7 +136,7 @@ class Customer {
 				FROM proforma_lines
 				WHERE proforma_id = :proforma_id
 				AND customer_id = :customer_id
-				ORDER BY line_id DESC
+				ORDER BY line_id ASC
 			');
 			$query->bindValue(':proforma_id', $proforma_id, PDO::PARAM_INT);
 			$query->bindValue(':customer_id', $this->customer_id, PDO::PARAM_INT);
@@ -214,7 +214,7 @@ class Customer {
 				FROM invoice_lines
 				WHERE invoice_id = :invoice_id
 				AND customer_id = :customer_id
-				ORDER BY line_id DESC
+				ORDER BY line_id ASC
 			');
 			$query->bindValue(':invoice_id', $invoice_id, PDO::PARAM_INT);
 			$query->bindValue(':customer_id', $this->customer_id, PDO::PARAM_INT);
@@ -249,6 +249,7 @@ class Customer {
 					$query->bindValue(':postcode', $postcode,PDO::PARAM_STR);
 					$query->bindValue(':phone', $phone, PDO::PARAM_STR);
 					$query->bindValue(':notes', $notes, PDO::PARAM_STR);
+					$query->execute();
 					return true; // Returns true if all is successful
 				} catch (PDOException $e) {
 					ExceptionErrorHandler($e);
@@ -270,7 +271,8 @@ class Customer {
 				FROM `customer_details`
 				WHERE customer_id = :customer_id
 			');
-			$query->bindValue(':customer_id', $this->customer_id, PDO::PARAM_STR);
+			$query->bindValue(':customer_id', $this->customer_id, PDO::PARAM_INT);
+			$query->execute();
 			return $query->fetch();
 		} catch (PDOException $e) {
 			ExceptionErrorHandler($e);
@@ -344,6 +346,11 @@ class Customer {
 			ExceptionErrorHandler($e);
 			return false;
 		}
+	}
+
+	// Returns any user error messages
+	public function getErrors(){
+		return $this->error;
 	}
 
 }

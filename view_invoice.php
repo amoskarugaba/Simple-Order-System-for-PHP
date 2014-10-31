@@ -8,17 +8,16 @@ if(!isset($_GET['i'])){
 
 $invoice_id = (int)$_GET['i'];
 
-require('class/Orders.php');
-require('class/CustomerDetails.php');
+require('class/Customer.php');
 
-$customer_details = new CyanideSystems\CustomerDetails();
-$order = new CyanideSystems\Orders($_SESSION['customer_id']);
+$customer_details = new CyanideSystems\OrderSystem\CustomerDetails();
+$order = new CyanideSystems\OrderSystem\Orders($_SESSION['customer_id']);
 
 $invoice = $order->getInvoiceMain($invoice_id);
 
 $invoice_lines = $order->getInvoiceLines($invoice_id);
 
-$customer = $customer_details->getCustomerDetails($_SESSION['email']);
+$customer = $customer_details->getCustomerDetails();
 
 ?>
 <!doctype html>

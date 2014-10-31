@@ -1,11 +1,11 @@
 <?php
 require('private/config.php');
 require('private/restricted.php');
-require('class/Orders.php');
+require('class/Customer.php');
 
-$orders = new CyanideSystems\Orders($_SESSION['customer_id']);
+$orders = new CyanideSystems\OrderSystem\Customer($_SESSION['customer_id']);
 
-$unpaid_proformas = $orders->getUnpaidProformas();
+$unpaid_proformas = $orders->getProformas();
 
 foreach($unpaid_proformas as $proforma){
 

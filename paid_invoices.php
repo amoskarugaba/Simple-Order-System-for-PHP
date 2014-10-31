@@ -2,9 +2,9 @@
 
 require('private/config.php');
 require('private/restricted.php');
-require('class/Orders.php');
+require('class/Customer.php');
 
-$orders = new CyanideSystems\Orders($_SESSION['customer_id']);
+$orders = new CyanideSystems\OrderSystem\Customer($_SESSION['customer_id']);
 
 $invoices = $orders->getPaidInvoices();
 

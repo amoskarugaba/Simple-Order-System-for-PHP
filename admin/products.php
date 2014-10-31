@@ -1,9 +1,9 @@
 <?php
 require('../private/config.php');
 require('../private/restricted.php');
-require('../class/Products.php');
+require('../class/Admin.php');
 
-$products = new CyanideSystems\Products();
+$products = new CyanideSystems\OrderSystem\Admin();
 
 include('template/header.php');
 ?>

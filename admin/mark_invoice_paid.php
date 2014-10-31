@@ -1,7 +1,7 @@
 <?php
 require('../private/config.php');
 require('../private/restricted.php');
-require('../class/Orders.php');
+require('../class/Admin.php');
 
 
 if(!isset($_GET['p']) && !isset($_GET['c'])){
@@ -11,7 +11,7 @@ if(!isset($_GET['p']) && !isset($_GET['c'])){
 $proforma_id = (int)$_GET['p'];
 $customer_id = (int)$_GET['c'];
 
-$admin = new CyanideSystems\Orders($customer_id);
+$admin = new CyanideSystems\OrderSystem\Admin();
 
 if($admin->createInvoice($proforma_id)){
 	echo 'Invoice created';

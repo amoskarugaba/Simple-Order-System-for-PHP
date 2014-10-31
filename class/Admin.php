@@ -1,6 +1,6 @@
 <?php
 
-namespace CyanideSystems;
+namespace CyanideSystems\OrderSystem;
 use \PDO;
 
 class Admin {

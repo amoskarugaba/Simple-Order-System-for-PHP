@@ -3,7 +3,7 @@ require('../private/config.php');
 require('../private/restricted.php');
 require('../class/Admin.php');
 
-$admin = new CyanideSystems\Admin();
+$admin = new CyanideSystems\OrderSystem\Admin();
 
 $unpaid_proformas = $admin->getAllUnpaidProformas();
 

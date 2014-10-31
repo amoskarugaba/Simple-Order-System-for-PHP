@@ -9,9 +9,9 @@ if(!isset($_GET['p'])){
 
 $proforma_id = (int)$_GET['p'];
 
-require('class/Orders.php');
+require('class/Customer.php');
 
-$orders = new CyanideSystems\Orders($_SESSION['customer_id']);
+$orders = new CyanideSystems\OrderSystem\Customer($_SESSION['customer_id']);
 
 if($orders->cancelProforma($proforma_id)){
 	echo 'Proforma cancelled.';

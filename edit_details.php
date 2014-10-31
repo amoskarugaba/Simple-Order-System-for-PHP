@@ -316,9 +316,6 @@ include('template/header.php');
 				<label for="phone">Phone Number</label>
 				<input type="tel" name="phone" id="phone" placeholder="Telephone Number" required="required" />
 
-				<label for="email">Email Address</label>
-				<input type="email" name="email" id="email" placeholder="Email Address" required="required" />
-
 				<label for="notes">Additional Notes</label>
 				<textarea name="notes" id="notes" form="customerform" placeholder="Enter additional notes here if required..."></textarea>
 

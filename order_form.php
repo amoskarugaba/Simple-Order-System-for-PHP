@@ -1,9 +1,9 @@
 <?php
 require('private/config.php');
 require('private/restricted.php');
-require('class/Admin.php');
+require('class/Customer.php');
 
-$products = new CyanideSystems\Admin();
+$products = new CyanideSystems\OrderSystem\Customer($_SESSION['customer_id']);
 
 include('template/header.php');
 ?>
@@ -14,7 +14,7 @@ include('template/header.php');
 
 			<h2>Order Form</h2>
 
-			<form name="order_form" action="proforma.php" method="post">
+			<form name="order_form" action="create_proforma.php" method="post">
 				<table>
 					<thead>
 						<tr>

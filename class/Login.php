@@ -2,7 +2,7 @@
 
 // TO Do: Implement error logging that's a bit "smoother"
 
-namespace CyanideSystems;
+namespace CyanideSystems\OrderSystem;
 
 use \PDO;
 use \PHPMailer;

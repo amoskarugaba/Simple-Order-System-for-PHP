@@ -3,22 +3,20 @@ require('private/config.php');
 require('private/restricted.php');
 
 if(!isset($_GET['p'])){
-	header('Location: unpaid_proformas.php');
+	header('Location: proformas.php');
 }
 
 $proforma_id = (int)$_GET['p'];
 
-require('class/Orders.php');
-require('class/CustomerDetails.php');
+require('class/Customer.php');
 
-$customer_details = new CyanideSystems\CustomerDetails();
-$order = new CyanideSystems\Orders($_SESSION['customer_id']);
+$order = new CyanideSystems\OrderSystem\Customer($_SESSION['customer_id']);
 
 $proforma = $order->getProformaMain($proforma_id);
 
 $proforma_lines = $order->getProformaLines($proforma_id);
 
-$customer = $customer_details->getCustomerDetails($_SESSION['email']);
+$customer = $order->getCustomerDetails();
 
 ?>
 <!doctype html>
