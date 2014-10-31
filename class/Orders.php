@@ -52,6 +52,7 @@ class Orders {
 			$query->bindValue(':proforma_id', $proforma_id);
 			$query->execute();
 
+			// We could run a SELECT / JOIN each time this is viewed, which would result in less redundancy in SQL, however as
 			$query = $this->db->prepare('UPDATE `proforma_main` m
 				INNER JOIN (
 					SELECT customer_id, proforma_id, SUM(line_price*quantity) AS order_total
@@ -210,13 +211,12 @@ class Orders {
 		}
 	}
 
-	// TO DO
 	public function createInvoice($proforma_id){
 		$proforma_id = (int)$proforma_id;
 		$this->db->beginTransaction(); // Begin TRANSACTION so that if one query fails, the other will ROLLBACK
 		try {
-			$query = $this->db->prepare('INSERT INTO `invoice_main` (discount, order_total, customer_id)
-				SELECT discount, order_total, customer_id
+			$query = $this->db->prepare('INSERT INTO `invoice_main` (discount, order_total, proforma_id, customer_id)
+				SELECT discount, order_total, proforma_id, customer_id
 				FROM `proforma_main`
 				WHERE proforma_id = :proforma_id
 				AND customer_id = :customer_id
@@ -227,13 +227,39 @@ class Orders {
 			$query->bindValue(':customer_id', $this->customer_id, PDO::PARAM_INT);
 			$query->execute();
 
+			$invoice_id = $this->db->lastInsertId();
+
 			$query = $this->db->prepare('UPDATE `proforma_main`
 				SET invoiced = 1
 				WHERE proforma_id = :proforma_id
+				AND customer_id = :customer_id
+				AND invoiced = 0
 			');
 
 			$query->bindValue(':proforma_id', $proforma_id, PDO::PARAM_INT);
+			$query->bindValue(':customer_id', $this->customer_id, PDO::PARAM_INT);
 
+			$query->execute();
+
+			$query = $this->db->prepare('INSERT INTO `invoice_lines` (invoice_id)
+				VALUES (:invoice_id)
+			');
+
+			$query->bindValue(':invoice_id', $invoice_id, PDO::PARAM_INT);
+			$query->execute();
+
+			$query = $this->db->prepare('UPDATE `invoice_lines`, `proforma_lines`
+				SET `invoice_lines`.product_sku = `proforma_lines`.product_sku,
+					`invoice_lines`.quantity = `proforma_lines`.quantity,
+					`invoice_lines`.line_price = `proforma_lines`.line_price,
+					`invoice_lines`.vat_rate = `proforma_lines`.vat_rate,
+					`invoice_lines`.customer_id = `proforma_lines`.customer_id
+				WHERE `invoice_lines`.invoice_id = :invoice_id
+				AND customer_id = :customer_id
+			');
+
+			$query->bindValue(':invoice_id', $invoice_id, PDO::PARAM_INT);
+			$query->bindValue(':customer_id', $this->customer_id, PDO::PARAM_INT);
 			$query->execute();
 
 			$this->db->commit();

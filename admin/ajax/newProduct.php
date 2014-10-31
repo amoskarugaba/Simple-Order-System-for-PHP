@@ -1,7 +1,7 @@
 <?php
 require('../../private/config.php');
 require('../../private/restricted.php');
-require('../../class/Products.php');
+require('../../class/Admin.php');
 
 $products = new CyanideSystems\Products();
 

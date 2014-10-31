@@ -49,6 +49,7 @@ CREATE TABLE `invoice_lines` (
 	quantity INT(11) NOT NULL,
 	line_price DECIMAL(10, 2) NOT NULL,
 	vat_rate DECIMAL(5, 2) NOT NULL DEFAULT 0.00,
+	customer_id INT(11) NOT NULL,
 	invoice_id INT(11) NOT NULL,
 	PRIMARY KEY (line_id),
 	FOREIGN KEY (invoice_id) REFERENCES `invoice_main`(invoice_id)

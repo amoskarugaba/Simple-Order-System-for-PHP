@@ -18,8 +18,7 @@ class Login {
 		if($this->validateEmail($email)){
 			if($this->emailAvailable($email)){
 				$hash = password_hash($password, PASSWORD_DEFAULT);
-				$query = $this->db->prepare('INSERT INTO `site_logins`
-					(email, hash)
+				$query = $this->db->prepare('INSERT INTO `site_logins` (email, hash)
 					VALUES (:email, :hash)
 				');
 				$query->bindValue(':email', $email, PDO::PARAM_STR);
@@ -40,15 +39,15 @@ class Login {
 					return true;
 				} else {
 					error_log('Database Error: Failed to INSERT registration details into `site_logins`', 0);
-					$this->error .= REGISTRATION_DATABASE_INSERT_ERROR; // Returns this if registration NOT successful due to database insert error
+					$this->error .= REGISTRATION_DATABASE_INSERT_ERROR; // Returns message if registration NOT successful due to database insert error
 					return false;
 				}
 			} else {
-				$this->error .= REGISTRATION_EMAIL_UNAVAILABLE_ERROR; // Returns this if the email address is already in the database
+				$this->error .= REGISTRATION_EMAIL_UNAVAILABLE_ERROR; // Returns message if the email address is already in the database
 				return false;
 			}
 		} else {
-			$this->error .= RESGISTRATION_EMAIL_NOT_VALID; // Returns this if the email address doesn't pass validation (ie. it doesn't look like a real email address)
+			$this->error .= RESGISTRATION_EMAIL_NOT_VALID; // Returns message if the email address doesn't pass validation (ie. it doesn't look like a real email address)
 			return false;
 		}
 	}
