@@ -12,8 +12,6 @@ foreach($invoices as $invoice){
 
 	echo $invoice->invoice_id;
 	echo $invoice->date;
-	echo $invoice->discount;
-	echo $invoice->order_total;
 	echo '<a href="view_invoice.php?i=' . $invoice->invoice_id . '">View Invoice</a>';
 
 }

@@ -62,23 +62,6 @@ class Customer {
 			$query->bindValue(':proforma_id', $proforma_id);
 			$query->execute();
 
-			// We could run a SELECT / JOIN each time this is viewed, which would result in less redundancy in SQL, however as
-			$query = $this->db->prepare('UPDATE `proforma_main` m
-				INNER JOIN (
-					SELECT customer_id, proforma_id, SUM(line_price*quantity) AS order_total
-					FROM `proforma_lines`
-					WHERE proforma_id = :proforma_id
-					AND customer_id = :customer_id
-				) l ON m.proforma_id = l.proforma_id
-				SET m.order_total = l.order_total
-				WHERE l.proforma_id = :proforma_id
-				AND l.customer_id = :customer_id
-			');
-
-			$query->bindValue(':proforma_id', $proforma_id);
-			$query->bindValue(':customer_id', $this->customer_id);
-			$query->execute();
-
 			$this->db->commit();
 
 			return $proforma_id;
@@ -92,7 +75,7 @@ class Customer {
 	// Returns all customer's proformas
 	public function getProformas(){
 		try {
-			$query = $this->db->prepare('SELECT proforma_id, date, discount, order_total
+			$query = $this->db->prepare('SELECT proforma_id, date, customer_id
 				FROM `proforma_main`
 				WHERE customer_id = :customer_id
 				AND invoiced = 0
@@ -111,11 +94,12 @@ class Customer {
 		$proforma_id = (int)$proforma_id;
 		// Additional 'AND' WHERE clauses for security (makes sure no unscrupulous individual tries to view details from another customer)
 		try {
-			$query = $this->db->prepare('SELECT `proforma_main`.proforma_id,
-					`proforma_main`.date,
-					`proforma_main`.discount,
-					`proforma_main`.order_total,
-					`proforma_main`.customer_id,
+			$query = $this->db->prepare('SELECT m.proforma_id,
+					m.date,
+					m.discount,
+					total,
+					total_vat_net,
+					total_gross,
 					`customer_details`.email,
 					`customer_details`.firstname,
 					`customer_details`.lastname,
@@ -127,14 +111,20 @@ class Customer {
 					`customer_details`.postcode,
 					`customer_details`.phone,
 					`customer_details`.notes
-				FROM `proforma_main`, `customer_details`
-				WHERE `proforma_main`.customer_id = `customer_details`.customer_id
-				AND `customer_details`.customer_id = :customer_id
-				AND `proforma_main`.customer_id = :customer_id
-				AND `proforma_main`.proforma_id = :proforma_id
-				ORDER BY date DESC
-				LIMIT 1
+				FROM `customer_details`, `proforma_main` m
+				JOIN (
+					SELECT `proforma_lines`.customer_id,
+					`proforma_lines`.proforma_id,
+					SUM(quantity*line_price) AS total,
+					SUM(quantity*line_price*(vat_rate/100)) AS total_vat_net,
+					SUM(quantity*line_price*(vat_rate/100+1)) AS total_gross
+					FROM `proforma_lines`
+					WHERE `proforma_lines`.proforma_id = :proforma_id
+					AND `proforma_lines`.customer_id = :customer_id
+				) AS l ON m.proforma_id = l.proforma_id
+				WHERE m.customer_id = l.customer_id
 			');
+
 			$query->bindValue(':proforma_id', $proforma_id, PDO::PARAM_INT);
 			$query->bindValue(':customer_id', $this->customer_id, PDO::PARAM_INT);
 			$query->execute();
@@ -205,11 +195,12 @@ class Customer {
 		$invoice_id = (int)$invoice_id;
 		// Additional 'AND' WHERE clauses for security (makes sure no unscrupulous individual tries to view details from another customer)
 		try {
-			$query = $this->db->prepare('SELECT `invoice_main`.invoice_id,
-					`invoice_main`.date,
-					`invoice_main`.discount,
-					`invoice_main`.order_total,
-					`invoice_main`.customer_id,
+			$query = $this->db->prepare('SELECT m.invoice_id,
+					m.date,
+					m.discount,
+					total,
+					total_vat_net,
+					total_gross,
 					`customer_details`.email,
 					`customer_details`.firstname,
 					`customer_details`.lastname,
@@ -221,13 +212,18 @@ class Customer {
 					`customer_details`.postcode,
 					`customer_details`.phone,
 					`customer_details`.notes
-				FROM `invoice_main`, `customer_details`
-				WHERE `invoice_main`.customer_id = `customer_details`.customer_id
-				AND `customer_details`.customer_id = :customer_id
-				AND `invoice_main`.customer_id = :customer_id
-				AND `invoice_main`.invoice_id = :invoice_id
-				ORDER BY date DESC
-				LIMIT 1
+				FROM `customer_details`, `invoice_main` m
+				JOIN (
+					SELECT `invoice_lines`.customer_id,
+					`invoice_lines`.invoice_id,
+					SUM(quantity*line_price) AS total,
+					SUM(quantity*line_price*(vat_rate/100)) AS total_vat_net,
+					SUM(quantity*line_price*(vat_rate/100+1)) AS total_gross
+					FROM `invoice_lines`
+					WHERE `invoice_lines`.invoice_id = :invoice_id
+					AND `invoice_lines`.customer_id = :customer_id
+				) AS l ON m.invoice_id = l.invoice_id
+				WHERE m.customer_id = l.customer_id
 			');
 			$query->bindValue(':invoice_id', $invoice_id, PDO::PARAM_INT);
 			$query->bindValue(':customer_id', $this->customer_id, PDO::PARAM_INT);

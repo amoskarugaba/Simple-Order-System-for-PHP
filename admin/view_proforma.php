@@ -16,6 +16,7 @@ $proforma = $order->getProformaMain($proforma_id);
 
 $proforma_lines = $order->getProformaLines($proforma_id);
 
+
 ?>
 <!doctype html>
 <html lang="en-GB">
@@ -25,7 +26,7 @@ $proforma_lines = $order->getProformaLines($proforma_id);
 		<link rel="stylesheet" href="../template/assets/css/invoice.min.css" />
 	</head>
 	<body>
-		<p class="return"><a href="/index.php" target="_blank">[Return to Main Dashboard]</a></p>
+		<p class="return"><a href="proformas.php" target="_blank">[Return to Proformas]</a></p>
 		<section class="page-break">
 			<br />
 			<header>
@@ -63,7 +64,7 @@ $proforma_lines = $order->getProformaLines($proforma_id);
 					</tr>
 					<tr>
 						<th><span>Amount Due</span></th>
-						<td><span data-prefix>&pound; </span><span><?php echo $proforma->order_total; ?></span></td>
+						<td><span data-prefix>&pound; </span><span><?php echo $proforma->total_gross; ?></span></td>
 					</tr>
 				</table>
 				<table class="inventory">
@@ -81,10 +82,10 @@ $proforma_lines = $order->getProformaLines($proforma_id);
 							foreach($proforma_lines as $proforma_line){ ?>
 								<tr>
 									<td><span><?php echo $proforma_line->quantity; ?></span></td>
-									<td><span><?php echo $proforma_line->product_sku; ?></span></td>
-									<td><span data-prefix>&pound; </span><span><?php echo $proforma_line->line_price; ?></span></td>
+									<td><span><?php echo $proforma_line->product_sku; ?> <small>at &pound; <?php echo $proforma_line->line_price; ?> each</small></span></td>
+									<td><span data-prefix>&pound; </span><span><?php echo $proforma_line->line_total; ?></span></td>
 									<td><span><?php echo $proforma_line->vat_rate; ?>%</span></td>
-									<td><span data-prefix>&pound; </span><span>TODO</span></td>
+									<td><span data-prefix>&pound; </span><span><?php echo $proforma_line->vat_net; ?></span></td>
 								</tr>
 						<?php } ?>
 						<tr>
@@ -99,11 +100,15 @@ $proforma_lines = $order->getProformaLines($proforma_id);
 				<table class="balance">
 					<tr>
 						<th><span>VAT</span></th>
-						<td><span data-prefix>&pound; </span><span></span></td>
+						<td><span data-prefix>&pound; </span><span><?php echo $proforma->total_vat_net; ?></span></td>
 					</tr>
 					<tr>
-						<th><span>Total</span></th>
-						<td><span data-prefix>&pound; </span><span><?php echo $proforma->order_total; ?></span></td>
+						<th><span>Total (Net.)</span></th>
+						<td><span data-prefix>&pound; </span><span><?php echo $proforma->total; ?></span></td>
+					</tr>
+					<tr>
+						<th><span>Total (Gross)</span></th>
+						<td><span data-prefix>&pound; </span><span><?php echo $proforma->total_gross; ?></span></td>
 					</tr>
 				</table>
 			</article>

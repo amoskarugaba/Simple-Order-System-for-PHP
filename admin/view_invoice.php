@@ -21,11 +21,11 @@ $invoice_lines = $order->getInvoiceLines($invoice_id);
 <html lang="en-GB">
 	<head>
 		<meta charset="utf-8" />
-		<title>Invoice ID: <?php echo $invoice->invoice_id; ?></title>
+		<title>invoice ID: <?php echo $invoice->invoice_id; ?></title>
 		<link rel="stylesheet" href="../template/assets/css/invoice.min.css" />
 	</head>
 	<body>
-		<p class="return"><a href="/index.php" target="_blank">[Return to Main Dashboard]</a></p>
+		<p class="return"><a href="invoices.php" target="_blank">[Return to Invoices]</a></p>
 		<section class="page-break">
 			<br />
 			<header>
@@ -63,7 +63,7 @@ $invoice_lines = $order->getInvoiceLines($invoice_id);
 					</tr>
 					<tr>
 						<th><span>Amount Due</span></th>
-						<td><span data-prefix>&pound; </span><span><?php echo $invoice->order_total; ?></span></td>
+						<td><span data-prefix>&pound; </span><span><?php echo $invoice->total_gross; ?></span></td>
 					</tr>
 				</table>
 				<table class="inventory">
@@ -81,10 +81,10 @@ $invoice_lines = $order->getInvoiceLines($invoice_id);
 							foreach($invoice_lines as $invoice_line){ ?>
 								<tr>
 									<td><span><?php echo $invoice_line->quantity; ?></span></td>
-									<td><span><?php echo $invoice_line->product_sku; ?></span></td>
-									<td><span data-prefix>&pound; </span><span><?php echo $invoice_line->line_price; ?></span></td>
+									<td><span><?php echo $invoice_line->product_sku; ?> at <?php echo $invoice_line->line_price; ?></span></td>
+									<td><span data-prefix>&pound; </span><span><?php echo $invoice_line->line_total; ?></span></td>
 									<td><span><?php echo $invoice_line->vat_rate; ?>%</span></td>
-									<td><span data-prefix>&pound; </span><span>TODO</span></td>
+									<td><span data-prefix>&pound; </span><span><?php echo $invoice_line->vat_net; ?></span></td>
 								</tr>
 						<?php } ?>
 						<tr>
@@ -99,11 +99,15 @@ $invoice_lines = $order->getInvoiceLines($invoice_id);
 				<table class="balance">
 					<tr>
 						<th><span>VAT</span></th>
-						<td><span data-prefix>&pound; </span><span></span></td>
+						<td><span data-prefix>&pound; </span><span><?php echo $invoice->total_vat_net; ?></span></td>
 					</tr>
 					<tr>
-						<th><span>Total</span></th>
-						<td><span data-prefix>&pound; </span><span><?php echo $invoice->order_total; ?></span></td>
+						<th><span>Total (Net.)</span></th>
+						<td><span data-prefix>&pound; </span><span><?php echo $invoice->total; ?></span></td>
+					</tr>
+					<tr>
+						<th><span>Total (Gross)</span></th>
+						<td><span data-prefix>&pound; </span><span><?php echo $invoice->total_gross; ?></span></td>
 					</tr>
 				</table>
 			</article>

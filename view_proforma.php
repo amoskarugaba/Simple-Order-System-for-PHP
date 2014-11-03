@@ -26,7 +26,7 @@ $proforma_lines = $order->getProformaLines($proforma_id);
 		<link rel="stylesheet" href="template/assets/css/invoice.min.css" />
 	</head>
 	<body>
-		<p class="return"><a href="/index.php" target="_blank">[Return to Main Dashboard]</a></p>
+		<p class="return"><a href="proformas.php" target="_blank">[Return to Proformas]</a></p>
 		<section class="page-break">
 			<br />
 			<header>
@@ -64,7 +64,7 @@ $proforma_lines = $order->getProformaLines($proforma_id);
 					</tr>
 					<tr>
 						<th><span>Amount Due</span></th>
-						<td><span data-prefix>&pound; </span><span><?php echo $proforma->order_total; ?></span></td>
+						<td><span data-prefix>&pound; </span><span><?php echo $proforma->total_gross; ?></span></td>
 					</tr>
 				</table>
 				<table class="inventory">
@@ -100,11 +100,15 @@ $proforma_lines = $order->getProformaLines($proforma_id);
 				<table class="balance">
 					<tr>
 						<th><span>VAT</span></th>
-						<td><span data-prefix>&pound; </span><span></span></td>
+						<td><span data-prefix>&pound; </span><span><?php echo $proforma->total_vat_net; ?></span></td>
 					</tr>
 					<tr>
-						<th><span>Total</span></th>
-						<td><span data-prefix>&pound; </span><span><?php echo $proforma->order_total; ?></span></td>
+						<th><span>Total (Net.)</span></th>
+						<td><span data-prefix>&pound; </span><span><?php echo $proforma->total; ?></span></td>
+					</tr>
+					<tr>
+						<th><span>Total (Gross)</span></th>
+						<td><span data-prefix>&pound; </span><span><?php echo $proforma->total_gross; ?></span></td>
 					</tr>
 				</table>
 			</article>
