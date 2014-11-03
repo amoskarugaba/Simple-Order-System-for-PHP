@@ -77,7 +77,57 @@ class Admin {
 			');
 			return $query->fetchAll();
 		} catch (PDOException $e) {
-			$this->db->rollback();
+			ExceptionErrorHandler($e);
+			return false;
+		}
+	}
+
+	// Returns specific proforma based on proforma_id
+	public function getProformaMain($proforma_id){
+		$proforma_id = (int)$proforma_id;
+		try {
+			$query = $this->db->prepare('SELECT `proforma_main`.proforma_id,
+					`proforma_main`.date,
+					`proforma_main`.discount,
+					`proforma_main`.order_total,
+					`proforma_main`.customer_id,
+					`customer_details`.email,
+					`customer_details`.firstname,
+					`customer_details`.lastname,
+					`customer_details`.company,
+					`customer_details`.address1,
+					`customer_details`.address2,
+					`customer_details`.town,
+					`customer_details`.county,
+					`customer_details`.postcode,
+					`customer_details`.phone,
+					`customer_details`.notes
+				FROM `proforma_main`, `customer_details`
+				WHERE `proforma_main`.customer_id = `customer_details`.customer_id
+				AND `proforma_main`.proforma_id = :proforma_id
+			');
+			$query->bindValue(':proforma_id', $proforma_id, PDO::PARAM_INT);
+			$query->execute();
+			return $query->fetch();
+		} catch (PDOException $e) {
+			ExceptionErrorHandler($e);
+			return false;
+		}
+	}
+
+	// Returns specific proforma lines based on proforma_id
+	public function getProformaLines($proforma_id){
+		$proforma_id = (int)$proforma_id;
+		try {
+			$query = $this->db->prepare('SELECT date, product_sku, quantity, line_price, vat_rate
+				FROM proforma_lines
+				WHERE proforma_id = :proforma_id
+				ORDER BY line_id ASC
+			');
+			$query->bindValue(':proforma_id', $proforma_id, PDO::PARAM_INT);
+			$query->execute();
+			return $query->fetchAll();
+		} catch (PDOException $e) {
 			ExceptionErrorHandler($e);
 			return false;
 		}
@@ -135,6 +185,67 @@ class Admin {
 			return true;
 		} catch (PDOException $e) {
 			$this->db->rollback();
+			ExceptionErrorHandler($e);
+			return false;
+		}
+	}
+
+	public function getInvoices(){
+		try {
+			$query = $this->db->query('SELECT proforma_id, date, discount, order_total, customer_id
+				FROM `invoice_main`
+			');
+			return $query->fetchAll();
+		} catch (PDOException $e) {
+			ExceptionErrorHandler($e);
+			return false;
+		}
+	}
+
+	public function getInvoiceMain($invoice_id){
+		$invoice_id = (int)$invoice_id;
+		try {
+			$query = $this->db->prepare('SELECT `invoice_main`.invoice_id,
+					`invoice_main`.date,
+					`invoice_main`.discount,
+					`invoice_main`.order_total,
+					`invoice_main`.customer_id,
+					`customer_details`.email,
+					`customer_details`.firstname,
+					`customer_details`.lastname,
+					`customer_details`.company,
+					`customer_details`.address1,
+					`customer_details`.address2,
+					`customer_details`.town,
+					`customer_details`.county,
+					`customer_details`.postcode,
+					`customer_details`.phone,
+					`customer_details`.notes
+				FROM `invoice_main`, `customer_details`
+				WHERE `invoice_main`.customer_id = `customer_details`.customer_id
+				AND `invoice_main`.invoice_id = :invoice_id
+			');
+			$query->bindValue(':invoice_id', $invoice_id, PDO::PARAM_INT);
+			$query->execute();
+			return $query->fetch();
+		} catch (PDOException $e) {
+			ExceptionErrorHandler($e);
+			return false;
+		}
+	}
+
+	public function getInvoiceLines($invoice_id){
+		$invoice_id = (int)$invoice_id;
+		try {
+			$query = $this->db->prepare('SELECT date, product_sku, quantity, line_price, vat_rate
+				FROM invoice_lines
+				WHERE invoice_id = :invoice_id
+				ORDER BY line_id ASC
+			');
+			$query->bindValue(':invoice_id', $invoice_id, PDO::PARAM_INT);
+			$query->execute();
+			return $query->fetchAll();
+		} catch (PDOException $e) {
 			ExceptionErrorHandler($e);
 			return false;
 		}

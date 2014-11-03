@@ -16,6 +16,9 @@
 		<nav>
 			<a href="index.php">Home</a>
 			<a href="order_form.php">Order Form</a>
+			<a href="edit_details.php">Edit Customer details</a>
+			<a href="invoices.php">Invoices (Paid)</a>
+			<a href="proformas.php">Proformas (Unpaid)</a>
 			<a href="logout.php">Logout</a>
 		</nav>
 	</header>

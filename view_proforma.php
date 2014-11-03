@@ -16,7 +16,6 @@ $proforma = $order->getProformaMain($proforma_id);
 
 $proforma_lines = $order->getProformaLines($proforma_id);
 
-$customer = $order->getCustomerDetails();
 
 ?>
 <!doctype html>
@@ -44,14 +43,14 @@ $customer = $order->getCustomerDetails();
 				<h1>Recipient</h1>
 				<address>
 					<p class="address">
-						FAO: <?php echo $customer->firstname; ?> <?php echo $customer->lastname; ?><br />
-						<?php echo $customer->company; ?><br />
-						<?php echo $customer->address1; ?><br />
-						<?php echo $customer->address2; ?><br />
-						<?php echo $customer->town; ?><br />
-						<?php echo $customer->county; ?><br />
-						<?php echo $customer->postcode; ?><br />
-						<?php echo $customer->phone; ?>
+						FAO: <?php echo $proforma->firstname; ?> <?php echo $proforma->lastname; ?><br />
+						<?php echo $proforma->company; ?><br />
+						<?php echo $proforma->address1; ?><br />
+						<?php echo $proforma->address2; ?><br />
+						<?php echo $proforma->town; ?><br />
+						<?php echo $proforma->county; ?><br />
+						<?php echo $proforma->postcode; ?><br />
+						<?php echo $proforma->phone; ?>
 					</p>
 				</address>
 				<table class="meta">

@@ -1,16 +1,16 @@
 <?php
-require('private/config.php');
-require('private/restricted.php');
+require('../private/config.php');
+require('../private/restricted.php');
 
 if(!isset($_GET['i'])){
-	header('Location: paid_invoices.php');
+	header('Location: invoices.php');
 }
 
 $invoice_id = (int)$_GET['i'];
 
-require('class/Customer.php');
+require('../class/Admin.php');
 
-$order = new CyanideSystems\OrderSystem\Customer($_SESSION['customer_id']);
+$order = new CyanideSystems\OrderSystem\Admin();
 
 $invoice = $order->getInvoiceMain($invoice_id);
 
@@ -21,8 +21,8 @@ $invoice_lines = $order->getInvoiceLines($invoice_id);
 <html lang="en-GB">
 	<head>
 		<meta charset="utf-8" />
-		<title>invoice ID: <?php echo $invoice->invoice_id; ?></title>
-		<link rel="stylesheet" href="template/assets/css/invoice.min.css" />
+		<title>Invoice ID: <?php echo $invoice->invoice_id; ?></title>
+		<link rel="stylesheet" href="../template/assets/css/invoice.min.css" />
 	</head>
 	<body>
 		<p class="return"><a href="/index.php" target="_blank">[Return to Main Dashboard]</a></p>
@@ -36,7 +36,7 @@ $invoice_lines = $order->getInvoiceLines($invoice_id);
 					<p>Hucknall, NG15 7SZ</p>
 					<p>0115 963 6696</p>
 				</address>
-				<span><img alt="Bluebelles" src="template/assets/img/logo.png" /></span>
+				<span><img alt="Bluebelles" src="../template/assets/img/logo.png" /></span>
 			</header>
 			<article>
 				<h1>Recipient</h1>

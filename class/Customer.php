@@ -110,11 +110,26 @@ class Customer {
 	public function getProformaMain($proforma_id){
 		$proforma_id = (int)$proforma_id;
 		try {
-			$query = $this->db->prepare('SELECT proforma_id, date, discount, order_total
-				FROM proforma_main
-				WHERE invoiced = 0
-				AND proforma_id = :proforma_id
-				AND customer_id = :customer_id
+			$query = $this->db->prepare('SELECT `proforma_main`.proforma_id,
+					`proforma_main`.date,
+					`proforma_main`.discount,
+					`proforma_main`.order_total,
+					`proforma_main`.customer_id,
+					`customer_details`.email,
+					`customer_details`.firstname,
+					`customer_details`.lastname,
+					`customer_details`.company,
+					`customer_details`.address1,
+					`customer_details`.address2,
+					`customer_details`.town,
+					`customer_details`.county,
+					`customer_details`.postcode,
+					`customer_details`.phone,
+					`customer_details`.notes
+				FROM `proforma_main`, `customer_details`
+				WHERE `proforma_main`.customer_id = `customer_details`.customer_id
+				AND `customer_details`.customer_id = :customer_id
+				AND `proforma_main`.proforma_id = :proforma_id
 				ORDER BY date DESC
 				LIMIT 1
 			');
@@ -162,7 +177,6 @@ class Customer {
 			$query->execute();
 			return true;
 		} catch (PDOException $e) {
-			$this->db->rollback();
 			ExceptionErrorHandler($e);
 			return false;
 		}
@@ -179,7 +193,6 @@ class Customer {
 			$query->execute();
 			return $query->fetchAll();
 		} catch (PDOException $e) {
-			$this->db->rollback();
 			ExceptionErrorHandler($e);
 			return false;
 		}
@@ -189,10 +202,26 @@ class Customer {
 	public function getInvoiceMain($invoice_id){
 		$invoice_id = (int)$invoice_id;
 		try {
-			$query = $this->db->prepare('SELECT invoice_id, date, discount, order_total
-				FROM invoice_main
-				WHERE invoice_id = :invoice_id
-				AND customer_id = :customer_id
+			$query = $this->db->prepare('SELECT `invoice_main`.invoice_id,
+					`invoice_main`.date,
+					`invoice_main`.discount,
+					`invoice_main`.order_total,
+					`invoice_main`.customer_id,
+					`customer_details`.email,
+					`customer_details`.firstname,
+					`customer_details`.lastname,
+					`customer_details`.company,
+					`customer_details`.address1,
+					`customer_details`.address2,
+					`customer_details`.town,
+					`customer_details`.county,
+					`customer_details`.postcode,
+					`customer_details`.phone,
+					`customer_details`.notes
+				FROM `invoice_main`, `customer_details`
+				WHERE `invoice_main`.customer_id = `customer_details`.customer_id
+				AND `customer_details`.customer_id = :customer_id
+				AND `invoice_main`.invoice_id = :invoice_id
 				ORDER BY date DESC
 				LIMIT 1
 			');

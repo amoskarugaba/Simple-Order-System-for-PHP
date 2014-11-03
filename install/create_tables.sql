@@ -83,16 +83,3 @@ CREATE TABLE `proforma_lines` (
 	ON DELETE CASCADE
 	ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-
-
-/* Copy proforma lines to invoice */
-
-INSERT INTO `invoice_main` (discount, order_total, customer_id)
-SELECT discount, order_total, customer_id
-FROM `proforma_main`
-WHERE order_id= :order_id
-
-UPDATE `proforma_main`
-SET invoiced=1
-WHERE order_id= :order_id
