@@ -34,3 +34,13 @@ define('MAIL_SMTP_USERNAME', 'user@example.com');
 define('MAIL_SMTP_PASSWORD', 'password');
 define('MAIL_SMTP_SECURITY', 'tls');
 define('MAIL_SMTP_PORT', 587);
+
+// User error handling
+// Ok, a bit of an explanation - I'm trying to find a nice 'clean' means of returning any error messages back to the user (eg. incorrect password) which does not rely on JavaScript/AJAX or $_GET requests
+// Oh, and.. there will be a JavaScript/AJAX solution soon in my repos., as that's what I'll use in my production site - however, the ideal is to get something that will work 100% without JavaScript as well (just for fun / why not?)!
+if(isset($_SESSION['error'])){
+	$user_error = $_SESSION['error'];
+	unset($_SESSION['error']);
+} else {
+	$user_error = null;
+}
