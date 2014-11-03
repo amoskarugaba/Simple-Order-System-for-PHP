@@ -82,10 +82,10 @@ $proforma_lines = $order->getProformaLines($proforma_id);
 							foreach($proforma_lines as $proforma_line){ ?>
 								<tr>
 									<td><span><?php echo $proforma_line->quantity; ?></span></td>
-									<td><span><?php echo $proforma_line->product_sku; ?></span></td>
-									<td><span data-prefix>&pound; </span><span><?php echo $proforma_line->line_price; ?></span></td>
+									<td><span><?php echo $proforma_line->product_sku; ?> <small>at &pound; <?php echo $proforma_line->line_price; ?> each</small></span></td>
+									<td><span data-prefix>&pound; </span><span><?php echo $proforma_line->line_total; ?></span></td>
 									<td><span><?php echo $proforma_line->vat_rate; ?>%</span></td>
-									<td><span data-prefix>&pound; </span><span>TODO</span></td>
+									<td><span data-prefix>&pound; </span><span><?php echo $proforma_line->vat_net; ?></span></td>
 								</tr>
 						<?php } ?>
 						<tr>

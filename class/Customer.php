@@ -149,7 +149,7 @@ class Customer {
 	public function getProformaLines($proforma_id){
 		$proforma_id = (int)$proforma_id;
 		try {
-			$query = $this->db->prepare('SELECT date, product_sku, quantity, line_price, vat_rate
+			$query = $this->db->prepare('SELECT date, product_sku, quantity, line_price, vat_rate, quantity*line_price AS line_total, quantity*line_price*(vat_rate/100) AS vat_net
 				FROM proforma_lines
 				WHERE proforma_id = :proforma_id
 				AND customer_id = :customer_id
@@ -243,7 +243,7 @@ class Customer {
 	public function getInvoiceLines($invoice_id){
 		$invoice_id = (int)$invoice_id;
 		try {
-			$query = $this->db->prepare('SELECT date, product_sku, quantity, line_price, vat_rate
+			$query = $this->db->prepare('SELECT date, product_sku, quantity, line_price, vat_rate, quantity*line_price AS line_total, quantity*line_price*(vat_rate/100) AS vat_net
 				FROM invoice_lines
 				WHERE invoice_id = :invoice_id
 				AND customer_id = :customer_id

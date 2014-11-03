@@ -119,9 +119,9 @@ class Admin {
 	public function getProformaLines($proforma_id){
 		$proforma_id = (int)$proforma_id;
 		try {
-			$query = $this->db->prepare('SELECT date, product_sku, quantity, line_price, vat_rate
+			$query = $this->db->prepare('SELECT date, product_sku, quantity, line_price, vat_rate, quantity*line_price AS line_total, quantity*line_price*(vat_rate/100) AS vat_net
 				FROM proforma_lines
-				WHERE proforma_id = :proforma_id
+				WHERE invoice_id = :proforma_id
 				ORDER BY line_id ASC
 			');
 			$query->bindValue(':proforma_id', $proforma_id, PDO::PARAM_INT);
@@ -237,7 +237,7 @@ class Admin {
 	public function getInvoiceLines($invoice_id){
 		$invoice_id = (int)$invoice_id;
 		try {
-			$query = $this->db->prepare('SELECT date, product_sku, quantity, line_price, vat_rate
+			$query = $this->db->prepare('SELECT date, product_sku, quantity, line_price, vat_rate, quantity*line_price AS line_total, quantity*line_price*(vat_rate/100) AS vat_net
 				FROM invoice_lines
 				WHERE invoice_id = :invoice_id
 				ORDER BY line_id ASC

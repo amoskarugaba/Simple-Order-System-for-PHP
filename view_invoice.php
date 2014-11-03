@@ -81,10 +81,10 @@ $invoice_lines = $order->getInvoiceLines($invoice_id);
 							foreach($invoice_lines as $invoice_line){ ?>
 								<tr>
 									<td><span><?php echo $invoice_line->quantity; ?></span></td>
-									<td><span><?php echo $invoice_line->product_sku; ?></span></td>
-									<td><span data-prefix>&pound; </span><span><?php echo $invoice_line->line_price; ?></span></td>
+									<td><span><?php echo $invoice_line->product_sku; ?> at <?php echo $invoice_line->line_price; ?></span></td>
+									<td><span data-prefix>&pound; </span><span><?php echo $invoice_line->line_total; ?></span></td>
 									<td><span><?php echo $invoice_line->vat_rate; ?>%</span></td>
-									<td><span data-prefix>&pound; </span><span>TODO</span></td>
+									<td><span data-prefix>&pound; </span><span><?php echo $invoice_line->vat_net; ?></span></td>
 								</tr>
 						<?php } ?>
 						<tr>
