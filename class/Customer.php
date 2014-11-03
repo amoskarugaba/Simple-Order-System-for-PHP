@@ -109,6 +109,7 @@ class Customer {
 	// Returns specific proforma based on proforma_id and customer_id
 	public function getProformaMain($proforma_id){
 		$proforma_id = (int)$proforma_id;
+		// Additional 'AND' WHERE clauses for security (makes sure no unscrupulous individual tries to view details from another customer)
 		try {
 			$query = $this->db->prepare('SELECT `proforma_main`.proforma_id,
 					`proforma_main`.date,
@@ -129,6 +130,7 @@ class Customer {
 				FROM `proforma_main`, `customer_details`
 				WHERE `proforma_main`.customer_id = `customer_details`.customer_id
 				AND `customer_details`.customer_id = :customer_id
+				AND `proforma_main`.customer_id = :customer_id
 				AND `proforma_main`.proforma_id = :proforma_id
 				ORDER BY date DESC
 				LIMIT 1
@@ -201,6 +203,7 @@ class Customer {
 	// Returns specific main invoice for customer
 	public function getInvoiceMain($invoice_id){
 		$invoice_id = (int)$invoice_id;
+		// Additional 'AND' WHERE clauses for security (makes sure no unscrupulous individual tries to view details from another customer)
 		try {
 			$query = $this->db->prepare('SELECT `invoice_main`.invoice_id,
 					`invoice_main`.date,
@@ -221,6 +224,7 @@ class Customer {
 				FROM `invoice_main`, `customer_details`
 				WHERE `invoice_main`.customer_id = `customer_details`.customer_id
 				AND `customer_details`.customer_id = :customer_id
+				AND `invoice_main`.customer_id = :customer_id
 				AND `invoice_main`.invoice_id = :invoice_id
 				ORDER BY date DESC
 				LIMIT 1
