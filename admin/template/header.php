@@ -17,6 +17,7 @@
 			<a href="proformas.php">Proformas (Unpaid)</a>
 			<a href="invoices.php">Invoices (Paid)</a>
 			<a href="products.php">Product Management</a>
+			<a href="new_product.php">New Product</a>
 			<a href="admin_logout.php">Logout</a>
 		</nav>
 	</header>
