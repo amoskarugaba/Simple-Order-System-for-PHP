@@ -285,11 +285,11 @@ class Customer {
 					return false;
 				}
 			} else {
-				$this->error .= REGISTRATION_EMAIL_UNAVAILABLE_ERROR; // Returns message if the email address is already in the database
+				$_SESSION['error'] = REGISTRATION_EMAIL_UNAVAILABLE_ERROR; // Returns message if the email address is already in the database
 				return false;
 			}
 		} else {
-			$this->error .= RESGISTRATION_EMAIL_NOT_VALID; // Returns message if the email address doesn't pass validation (ie. it doesn't look like a real email address)
+			$_SESSION['error'] = RESGISTRATION_EMAIL_NOT_VALID; // Returns message if the email address doesn't pass validation (ie. it doesn't look like a real email address)
 			return false;
 		}
 	}
@@ -375,11 +375,6 @@ class Customer {
 			ExceptionErrorHandler($e);
 			return false;
 		}
-	}
-
-	// Returns any user error messages
-	public function getErrors(){
-		return $this->error;
 	}
 
 }

@@ -9,9 +9,10 @@ $signup = new CyanideSystems\OrderSystem\Login();
 
 // Directs back to registration.php if there's an error
 if(!$signup->registerUser($email, $password)){
-	header('Location: register.php?e=' . urlencode($signup->getErrors()));
+	header('Location: register.php');
 }
 
+require('private/restricted.php');
 include('template/header.php');
 ?>
 
@@ -20,6 +21,8 @@ include('template/header.php');
 		<section>
 
 			<h2>Register</h2>
+
+			<?php echo $user_error; ?>
 
 			<form id="customerform" action="registration_success.php" method="post" autocomplete="on">
 

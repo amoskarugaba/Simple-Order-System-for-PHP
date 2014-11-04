@@ -2,19 +2,20 @@
 require('private/config.php');
 
 if(!isset($_POST['email']) || !isset($_POST['password'])){
-	header('Location: login.php?e=Please+enter+your+username+and_password+to+continue');
+	$_SESSION['error'] = LOGIN_CREDENTIALS_NOT_ENTERED;
+	header('Location: login.php');
 } else {
 	require('class/Login.php');
 
 	$email = $_POST['email'];
 	$password = $_POST['password'];
 
-	$login = new CyanideSystems\Login();
+	$login = new CyanideSystems\OrderSystem\Login();
 
-	if(!$login->verifyLogin($email, $password)){
-		header('Location: login.php?e=' . urlencode($login->getErrors()));
-	} else {
+	if($login->verifyLogin($email, $password)){
 		header('Location: index.php');
+	} else {
+		header('Location: login.php');
 	}
 
 }

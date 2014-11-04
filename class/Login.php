@@ -11,7 +11,6 @@ class Login {
 
 	public function __construct(){
 		$this->db = new PDO(DB_TYPE . ':host=' . DB_HOST . ';dbname=' . DB_NAME, DB_USER, DB_PASS, array(PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ, PDO::ATTR_ERRMODE => PDO::ERRMODE_WARNING));
-		$this->error = '';
 	}
 
 	public function registerUser($email, $password){
@@ -25,29 +24,28 @@ class Login {
 				$query->bindValue(':hash', $hash, PDO::PARAM_STR);
 				if($query->execute()){
 					if(!$this->sendConfirmation($email)){
-						$this->error .= REGISTRATION_SUCCESSFUL_EMAIL_NOT_SENT; // Returns this if registration successful, but confirmation email not sent
+						$_SESSION['error'] = REGISTRATION_SUCCESSFUL_EMAIL_NOT_SENT; // Returns this if registration successful, but confirmation email not sent
 					}
 					// This makes sure that the person logged in is the same as accessing the restricted page (include 'private/restricted.php' at the top of each page)
 					$radd = $_SERVER['REMOTE_ADDR'];
 					$hxff = getenv('HTTP_X_FORWARDED_FOR');
 					$agent = $_SERVER['HTTP_USER_AGENT'];
 					// $_SESSION['check'] checks against the $check variable in 'private/restricted.php'
-					session_start();
 					$_SESSION['check'] = hash('sha256', $radd . $hxff . $agent);
 					$_SESSION['customer_id'] = $this->getCustomerID($email);
 					$_SESSION['email'] = $email;
 					return true;
 				} else {
 					error_log('Database Error: Failed to INSERT registration details into `site_logins`', 0);
-					$this->error .= REGISTRATION_DATABASE_INSERT_ERROR; // Returns message if registration NOT successful due to database insert error
+					$_SESSION['error'] = REGISTRATION_DATABASE_INSERT_ERROR; // Returns message if registration NOT successful due to database insert error
 					return false;
 				}
 			} else {
-				$this->error .= REGISTRATION_EMAIL_UNAVAILABLE_ERROR; // Returns message if the email address is already in the database
+				$_SESSION['error'] = REGISTRATION_EMAIL_UNAVAILABLE_ERROR; // Returns message if the email address is already in the database
 				return false;
 			}
 		} else {
-			$this->error .= RESGISTRATION_EMAIL_NOT_VALID; // Returns message if the email address doesn't pass validation (ie. it doesn't look like a real email address)
+			$_SESSION['error'] = RESGISTRATION_EMAIL_NOT_VALID; // Returns message if the email address doesn't pass validation (ie. it doesn't look like a real email address)
 			return false;
 		}
 	}
@@ -93,16 +91,21 @@ class Login {
 
 	// You could change this function to 'public' and use it in an AJAX call to check if already registered if you would like..
 	private function emailAvailable($email){
-		$query = $this->db->prepare('SELECT email
-			FROM `site_logins`
-			WHERE email = :email
-		');
-		$query->bindValue(':email', $email, PDO::PARAM_STR);
-		$query->execute();
-		if($query->rowCount() > 0){
+		try {
+			$query = $this->db->prepare('SELECT email
+				FROM `site_logins`
+				WHERE email = :email
+			');
+			$query->bindValue(':email', $email, PDO::PARAM_STR);
+			$query->execute();
+			if($query->rowCount() > 0){
+				return false;
+			} else {
+				return true;
+			}
+		} catch (PDOException $e) {
+			ExceptionErrorHandler($e);
 			return false;
-		} else {
-			return true;
 		}
 	}
 
@@ -124,50 +127,47 @@ class Login {
 			$hxff = getenv('HTTP_X_FORWARDED_FOR');
 			$agent = $_SERVER['HTTP_USER_AGENT'];
 			// $_SESSION['check'] checks against the $check variable in 'private/restricted.php'
-			session_start();
 			$_SESSION['check'] = hash('sha256', $radd . $hxff . $agent);
 			$_SESSION['customer_id'] = $this->getCustomerID($email);
 			$_SESSION['email'] = $email;
 			return true;
 		} else {
-			$this->error .= INCORRECT_LOGIN_CREDENTIALS;
+			$_SESSION['error'] = INCORRECT_LOGIN_CREDENTIALS;
 			return false;
 		}
 	}
 
 	private function getHash($email){
-		$query = $this->db->prepare('SELECT hash
-			FROM `site_logins`
-			WHERE email = :email
-		');
-		$query->bindValue(':email', $email, PDO::PARAM_STR);
-		if($query->execute()){
+		try {
+			$query = $this->db->prepare('SELECT hash
+				FROM `site_logins`
+				WHERE email = :email
+			');
+			$query->bindValue(':email', $email, PDO::PARAM_STR);
+			$query->execute();
 			$check = $query->fetch();
 			return $check->hash;
-		} else {
-			error_log('Database Error: Failed to SELECT hash from `site_logins`', 0);
+		} catch (PDOException $e) {
+			ExceptionErrorHandler($e);
 			return false;
 		}
 	}
+
 
 	private function getCustomerID($email){
-		$query = $this->db->prepare('SELECT customer_id
-			FROM `site_logins`
-			WHERE email = :email
-		');
-		$query->bindValue(':email', $email, PDO::PARAM_STR);
-		if($query->execute()){
+		try {
+			$query = $this->db->prepare('SELECT customer_id
+				FROM `site_logins`
+				WHERE email = :email
+			');
+			$query->bindValue(':email', $email, PDO::PARAM_STR);
+			$query->execute();
 			$check = $query->fetch();
 			return $check->customer_id;
-		} else {
-			error_log('Database Error: Failed to SELECT ID from `site_logins`', 0);
+		} catch (PDOException $e) {
+			ExceptionErrorHandler($e);
 			return false;
 		}
-	}
-
-	// Return any errors
-	public function getErrors(){
-		return $this->error;
 	}
 
 	// TO-DO: Implement this correctly!

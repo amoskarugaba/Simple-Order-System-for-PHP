@@ -1,10 +1,5 @@
 <?php
 require('private/config.php');
-if(isset($_GET['e'])){
-	$error = '<p>' . urldecode($_GET['e']) . '</p>';
-} else {
-	$error = null;
-}
 include('template/header.php');
 ?>
 
@@ -14,7 +9,7 @@ include('template/header.php');
 
 			<h2>Register</h2>
 
-			<?php echo $error; ?>
+			<?php echo $user_error; ?>
 
 			<form name="register" action="register_details.php" method="post">
 				<input type="email" id="email" name="email" placeholder="Username (your email address)" required="required" />
