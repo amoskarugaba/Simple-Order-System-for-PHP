@@ -1,6 +1,6 @@
 <?php
 require('../private/config.php');
-require('../private/restricted.php');
+require('../private/restricted_admin.php');
 
 if(!isset($_GET['i'])){
 	header('Location: invoices.php');

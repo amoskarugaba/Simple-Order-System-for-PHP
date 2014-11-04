@@ -1,6 +1,6 @@
 <?php
 require('../private/config.php');
-require('../private/restricted.php'); // Restrict to Admin. only
+require('../private/restricted_admin.php'); // Restrict to Admin. only
 require('../class/Admin.php');
 
 $admin = new CyanideSystems\OrderSystem\Admin();

@@ -1,2 +1,2 @@
 Decrease stock on order
-
+Add admin. permissions

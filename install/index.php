@@ -8,6 +8,9 @@ include('../template/header.php');
 		<section>
 
 			<h2>Register New Administrator</h2>
+			<p>Welcome to the Simple Order System for PHP!</p>
+			<p>Please enter an email address for your new admin. account below, and choose a strong password. You'll then be directed to your new admin. dashboard where you can add products, other users, etc., and then manage invoices and proformas from customers.</p>
+			<p><strong>Important:</strong> Once you have registered your admin. details below, please delete the 'install' directory / folder.</p>
 
 			<?php echo $user_error; ?>
 

@@ -1,6 +1,6 @@
 <?php
 require('../private/config.php');
-require('../class/Login.php');
+require('../class/Admin.php');
 
 $email = $_POST['email'];
 $password = $_POST['password'];
