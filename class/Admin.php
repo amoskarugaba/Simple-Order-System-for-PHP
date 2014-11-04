@@ -150,8 +150,8 @@ class Admin {
 		$this->db->beginTransaction(); // Begin TRANSACTION so that if one query fails, the other will ROLLBACK
 		try {
 			// These can probably be cleaned up a bit and merged into a single SQL statement!
-			$query = $this->db->prepare('INSERT INTO `invoice_main` (discount, proforma_id, customer_id)
-				SELECT discount, proforma_id, customer_id
+			$query = $this->db->prepare('INSERT INTO `invoice_main` (discount, delivery, proforma_id, customer_id)
+				SELECT discount, delivery, proforma_id, customer_id
 				FROM `proforma_main`
 				WHERE proforma_id = :proforma_id
 				AND invoiced = 0
@@ -211,6 +211,7 @@ class Admin {
 			$query = $this->db->prepare('SELECT m.invoice_id,
 					m.date,
 					m.discount,
+					m.delivery,
 					total,
 					total_vat_net,
 					total_gross,
@@ -265,7 +266,7 @@ class Admin {
 		}
 	}
 
-	public function registerAdminUser($email, $password, $permissions){
+	public function registerAdminUser($email, $password, $permissions = 0){
 		$permissions = (int)$permissions;
 		if($this->validateEmail($email)){
 			if($this->emailAvailable($email)){
@@ -338,7 +339,7 @@ class Admin {
 			$hxff = getenv('HTTP_X_FORWARDED_FOR');
 			$agent = $_SERVER['HTTP_USER_AGENT'];
 			// $_SESSION['check'] checks against the $check variable in 'private/restricted.php'
-			$_SESSION['check'] = hash('sha256', $radd . $hxff . $agent);
+			$_SESSION['check'] = hash('sha256', 'admin' . $radd . $hxff . $agent);
 			$_SESSION['permissions'] = $this->getAdminPermissions($email);
 			$_SESSION['admin'] = true;
 			return true;
@@ -379,4 +380,118 @@ class Admin {
 			return false;
 		}
 	}
+
+	// Sets up tables for initial install (database details *must* be set in private/config.php)
+	public function setupDatabase(){
+		$this->db->beginTransaction(); // Begin TRANSACTION so that if one query fails, the other will ROLLBACK
+		try {
+			$this->db->query('CREATE TABLE `site_logins` (
+					customer_id INT(11) NOT NULL AUTO_INCREMENT,
+					email VARCHAR(255) NOT NULL,
+					hash VARCHAR(255) NOT NULL,
+					PRIMARY KEY (customer_id)
+				) ENGINE=InnoDB DEFAULT CHARSET=latin1
+			');
+
+			$this->db->query('CREATE TABLE `admin_logins` (
+					email VARCHAR(255) NOT NULL,
+					hash VARCHAR(255) NOT NULL,
+					permissions TINYINT(1) NOT NULL DEFAULT 0,
+					PRIMARY KEY (email)
+				) ENGINE=InnoDB DEFAULT CHARSET=latin1
+			');
+
+			$this->db->query('CREATE TABLE `customer_details` (
+					customer_id INT(11) NOT NULL,
+					email VARCHAR(255) NOT NULL,
+					firstname VARCHAR(100) NOT NULL,
+					lastname VARCHAR(100) NOT NULL,
+					company VARCHAR(100) NOT NULL,
+					address1 VARCHAR(255) NOT NULL,
+					address2 VARCHAR(255) NOT NULL,
+					town VARCHAR(65) NOT NULL,
+					county VARCHAR(30) NOT NULL,
+					postcode VARCHAR(9) NOT NULL,
+					phone VARCHAR(15) NOT NULL,
+					notes TEXT NOT NULL,
+					PRIMARY KEY (customer_id),
+					FOREIGN KEY (customer_id) REFERENCES `site_logins`(customer_id)
+				) ENGINE=InnoDB DEFAULT CHARSET=latin1
+			');
+
+			$this->db->query('CREATE TABLE `products` (
+					sku VARCHAR(30) NOT NULL,
+					product_name VARCHAR(255) NOT NULL,
+					price DECIMAL(10, 2) NOT NULL,
+					vat_rate DECIMAL(5, 2) NOT NULL DEFAULT 0.00,
+					stock_quantity INT(11) NOT NULL DEFAULT 0,
+					PRIMARY KEY (sku)
+				) ENGINE=InnoDB DEFAULT CHARSET=latin1
+			');
+
+			$this->db->query('CREATE TABLE `invoice_main` (
+					invoice_id INT(11) NOT NULL AUTO_INCREMENT,
+					date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+					discount DECIMAL(5, 2) NOT NULL DEFAULT 0.00,
+					delivery DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+					proforma_id INT(11) NOT NULL,
+					customer_id INT(11) NOT NULL,
+					PRIMARY KEY (invoice_id),
+					FOREIGN KEY (customer_id) REFERENCES `customer_details`(customer_id)
+				) ENGINE=InnoDB DEFAULT CHARSET=latin1
+			');
+
+			$this->db->query('CREATE TABLE `invoice_lines` (
+					line_id INT(11) NOT NULL AUTO_INCREMENT,
+					date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+					product_sku VARCHAR(20) NOT NULL,
+					quantity INT(11) NOT NULL,
+					line_price DECIMAL(10, 2) NOT NULL,
+					vat_rate DECIMAL(5, 2) NOT NULL DEFAULT 0.00,
+					customer_id INT(11) NOT NULL,
+					proforma_id INT(11) NOT NULL,
+					invoice_id INT(11) NOT NULL,
+					PRIMARY KEY (line_id),
+					FOREIGN KEY (invoice_id) REFERENCES `invoice_main`(invoice_id)
+					ON DELETE CASCADE
+					ON UPDATE CASCADE
+				) ENGINE=InnoDB DEFAULT CHARSET=latin1
+			');
+
+			$this->db->query('CREATE TABLE `proforma_main` (
+					proforma_id INT(11) NOT NULL AUTO_INCREMENT,
+					date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+					discount DECIMAL(5, 2) NOT NULL DEFAULT 0.00,
+					delivery DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+					invoiced TINYINT(1) NOT NULL DEFAULT 0,
+					customer_id INT(11) NOT NULL,
+					PRIMARY KEY (proforma_id),
+					FOREIGN KEY (customer_id) REFERENCES `customer_details`(customer_id)
+				) ENGINE=InnoDB DEFAULT CHARSET=latin1
+			');
+
+			$this->db->query('CREATE TABLE `proforma_lines` (
+					line_id INT(11) NOT NULL AUTO_INCREMENT,
+					date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+					product_sku VARCHAR(20) NOT NULL,
+					quantity INT(11) NOT NULL,
+					line_price DECIMAL(10, 2) NOT NULL,
+					vat_rate DECIMAL(5, 2) NOT NULL DEFAULT 0.00,
+					customer_id INT(11) NOT NULL,
+					proforma_id INT(11) NOT NULL,
+					PRIMARY KEY (line_id),
+					FOREIGN KEY (proforma_id) REFERENCES `proforma_main`(proforma_id)
+					ON DELETE CASCADE
+					ON UPDATE CASCADE
+				) ENGINE=InnoDB DEFAULT CHARSET=latin1
+			');
+			$this->db->commit();
+			return true;
+		} catch (PDOException $e) {
+			$this->db->rollback();
+			ExceptionErrorHandler($e);
+			return false;
+		}
+	}
+
 }

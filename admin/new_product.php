@@ -1,6 +1,6 @@
 <?php
 require('../private/config.php');
-require('../private/restricted.php');
+require('../private/restricted_admin.php');
 include('template/header.php');
 ?>
 
