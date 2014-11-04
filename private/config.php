@@ -1,7 +1,8 @@
 <?php
-session_start();
 
-// CONFIGURATION SETTINGS (Global)
+// This must be required at the top of every PHP page / script that is presented to the user (ie. everything not in 'class' or 'private' directories)
+
+session_start();
 
 // Set timezone (if this is set in your php.ini file you can remove this!)
 date_default_timezone_set('Europe/London');
@@ -12,9 +13,8 @@ ini_set('display_errors',1);
 ini_set('display_startup_errors',1);
 error_reporting(-1);
 
-//define('ERRORLOGGING', 0);
 
-// User and Error Messages in Login.php - Edit these to make them a bit more personal to your site / end users. If you're in the US you may wish to do some hideous 'Americanizationings' to further diminish the value of the English language.
+// User and Error Messages in Login.php - Edit these to make them a bit more personal to your site / end users.
 define('REGISTRATION_SUCCESSFUL_EMAIL_SENT', 'You have successfully registered. You should recieve an email confirming your registration.');
 define('REGISTRATION_SUCCESSFUL_EMAIL_NOT_SENT', 'You have successfully registered, but we were unable to send a confirmation email.');
 define('REGISTRATION_DATABASE_INSERT_ERROR', 'There was an error in registering you, please contact us so that we can resolve the issue.');
@@ -36,9 +36,7 @@ define('MAIL_SMTP_PASSWORD', 'password');
 define('MAIL_SMTP_SECURITY', 'tls');
 define('MAIL_SMTP_PORT', 587);
 
-// User error handling
-// Ok, a bit of an explanation - I'm trying to find a nice 'clean' means of returning any error messages back to the user (eg. incorrect password) which does not rely on JavaScript/AJAX or $_GET requests
-// Oh, and.. there will be a JavaScript/AJAX solution soon in my repos., as that's what I'll use in my production site - however, the ideal is to get something that will work 100% without JavaScript as well (just for fun / why not?)!
+// User error handling - any user errors (such as incorrect login credentials) are set in a session for a 'cleaner' feel for the end user
 if(isset($_SESSION['error'])){
 	$user_error = $_SESSION['error'];
 	unset($_SESSION['error']);

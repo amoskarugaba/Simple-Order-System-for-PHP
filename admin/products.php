@@ -33,7 +33,7 @@ include('template/header.php');
 
 	</main>
 
-	<script src="../js/responsive_tables.min.js"></script>
+	<script src="template/assets/js/responsive_tables.min.js"></script>
 
 	<!--<script>
 		// NOT WORKING (YET)

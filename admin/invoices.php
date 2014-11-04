@@ -7,8 +7,35 @@ $admin = new CyanideSystems\OrderSystem\Admin();
 
 $invoices = $admin->getInvoices();
 
-foreach($invoices as $invoice){
-	echo '<a href="view_invoice.php?i=' . $invoice->invoice_id . '">View Invoice</a>';
-	echo $invoice->date;
-	echo $invoice->customer_id;
-}
+include('template/header.php');
+?>
+
+	<main role="main">
+
+		<section>
+
+			<h2>Proformas</h2>
+
+			<table>
+				<thead>
+					<tr>
+						<th>Proforma ID</th><th>Proforma Date</th><th>Customer ID</th><th>View Invoice</th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php foreach($invoices as $invoice){ ?>
+					<tr>
+						<td><?php echo $invoice->invoice_id; ?></td><td><?php echo $invoice->date; ?></td><td><?php echo $invoice->customer_id; ?></td><td><a href="view_invoice.php?i=<?php echo $invoice->invoice_id; ?>" target="_blank">View Invoice</a></td>
+					</tr>
+					<?php } ?>
+				</tbody>
+			</table>
+
+		</section>
+
+	</main>
+
+	<script src="template/assets/js/responsive_tables.min.js"></script>
+
+<?php
+include('template/footer.php');

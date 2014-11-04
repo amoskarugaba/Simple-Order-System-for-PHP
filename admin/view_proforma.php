@@ -23,7 +23,7 @@ $proforma_lines = $order->getProformaLines($proforma_id);
 	<head>
 		<meta charset="utf-8" />
 		<title>Proforma ID: <?php echo $proforma->proforma_id; ?></title>
-		<link rel="stylesheet" href="../template/assets/css/invoice.min.css" />
+		<link rel="stylesheet" href="template/assets/css/invoice.min.css" />
 	</head>
 	<body>
 		<p class="return"><a href="proformas.php" target="_blank">[Return to Proformas]</a></p>
@@ -37,7 +37,7 @@ $proforma_lines = $order->getProformaLines($proforma_id);
 					<p>Hucknall, NG15 7SZ</p>
 					<p>0115 963 6696</p>
 				</address>
-				<span><img alt="Bluebelles" src="../template/assets/img/logo.png" /></span>
+				<span><img alt="Bluebelles" src="template/assets/img/logo.png" /></span>
 			</header>
 			<article>
 				<h1>Recipient</h1>

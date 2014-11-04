@@ -5,6 +5,13 @@ CREATE TABLE `site_logins` (
 	PRIMARY KEY (customer_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+CREATE TABLE `admin_logins` (
+	email VARCHAR(255) NOT NULL,
+	hash VARCHAR(255) NOT NULL,
+	permissions TINYINT(1) NOT NULL DEFAULT 0,
+	PRIMARY KEY (email)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 CREATE TABLE `customer_details` (
 	customer_id INT(11) NOT NULL,
 	email VARCHAR(255) NOT NULL,

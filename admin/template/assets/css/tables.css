@@ -1,0 +1,91 @@
+table {
+	width: 100%;
+	border-collapse: collapse;
+	font: normal 100%/1.5 "Helvetica Neue", Helvetica, Arial, sans-serif;
+	color:#666666;
+	font-size:12px;
+	text-shadow: 1px 1px 0px #FFFFFF;
+	background:#EAEBEC;
+	border:#CCCCCC 1px solid;
+	-moz-border-radius:3px;
+	-webkit-border-radius:3px;
+	border-radius:3px;
+	-moz-box-shadow: 0 1px 2px #D1D1D1;
+	-webkit-box-shadow: 0 1px 2px #D1D1D1;
+	box-shadow: 0 1px 2px #D1D1D1;
+}
+
+thead tr {
+	background: #F7F7F7;
+	color: #000000;
+	font-weight: bold;
+}
+
+/* Zebra striping */
+tbody tr:nth-of-type(odd) {
+	background: #E5E5E5;
+}
+
+td, th {
+	padding: 6px;
+	border: 1px solid #CCCCCC;
+	text-align: left;
+}
+
+table tr:hover td {
+	background: #F2F2F2;
+	background: -webkit-gradient(linear, left top, left bottom, from(#f2f2f2), to(#f0f0f0));
+	background: -moz-linear-gradient(top,  #f2f2f2,  #f0f0f0);
+}
+
+table a {
+	color: #44616A;
+	text-decoration:none;
+}
+
+table a:active,
+table a:hover {
+	color: #666666;
+	text-decoration:underline;
+}
+
+@media only screen and (max-width: 760px), (min-device-width: 768px) and (max-device-width: 1024px) {
+
+	/* Force table to not be like tables anymore */
+	table, thead, tbody, th, td, tr {
+		display: block;
+	}
+
+	table {
+		width: 100%;
+	}
+
+	/* Hide table headers (but not display: none;, for accessibility) */
+	thead tr {
+		position: absolute;
+		top: -9999px;
+		left: -9999px;
+	}
+
+	tr { border: 1px solid #ccc; }
+
+	td {
+		/* Behave	like a "row" */
+		border: none;
+		border-bottom: 1px solid #eee;
+		position: relative;
+		padding-left: 50%;
+	}
+
+	td:before {
+		/* Now like a table header */
+		position: absolute;
+		/* Top/left values mimic padding */
+		top: 6px;
+		left: 6px;
+		width: 45%;
+		padding-right: 10px;
+		white-space: nowrap;
+	}
+
+}

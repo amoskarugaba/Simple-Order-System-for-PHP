@@ -265,4 +265,118 @@ class Admin {
 		}
 	}
 
+	public function registerAdminUser($email, $password, $permissions){
+		$permissions = (int)$permissions;
+		if($this->validateEmail($email)){
+			if($this->emailAvailable($email)){
+				$hash = password_hash($password, PASSWORD_DEFAULT);
+				$query = $this->db->prepare('INSERT INTO `admin_logins` (email, hash, permissions)
+					VALUES (:email, :hash, :permissions)
+				');
+				$query->bindValue(':email', $email, PDO::PARAM_STR);
+				$query->bindValue(':hash', $hash, PDO::PARAM_STR);
+				$query->bindValue(':permissions', $permissions, PDO::PARAM_INT);
+				if($query->execute()){
+					// This makes sure that the person logged in is the same as accessing the restricted page (include 'private/restricted.php' at the top of each page)
+					$radd = $_SERVER['REMOTE_ADDR'];
+					$hxff = getenv('HTTP_X_FORWARDED_FOR');
+					$agent = $_SERVER['HTTP_USER_AGENT'];
+					// $_SESSION['check'] checks against the $check variable in 'private/restricted.php'
+					$_SESSION['check'] = hash('sha256', 'admin' . $radd . $hxff . $agent);
+					$_SESSION['permissions'] = $permissions;
+					$_SESSION['admin'] = true;
+					return true;
+				} else {
+					error_log('Database Error: Failed to INSERT registration details into `admin_logins`', 0);
+					$_SESSION['error'] = REGISTRATION_DATABASE_INSERT_ERROR; // Returns message if registration NOT successful due to database insert error
+					return false;
+				}
+			} else {
+				$_SESSION['error'] = REGISTRATION_EMAIL_UNAVAILABLE_ERROR; // Returns message if the email address is already in the database
+				return false;
+			}
+		} else {
+			$_SESSION['error'] = RESGISTRATION_EMAIL_NOT_VALID; // Returns message if the email address doesn't pass validation (ie. it doesn't look like a real email address)
+			return false;
+		}
+	}
+
+	private function emailAvailable($email){
+		try {
+			$query = $this->db->prepare('SELECT email
+				FROM `site_logins`
+				WHERE email = :email
+			');
+			$query->bindValue(':email', $email, PDO::PARAM_STR);
+			$query->execute();
+			if($query->rowCount() > 0){
+				return false;
+			} else {
+				return true;
+			}
+		} catch (PDOException $e) {
+			ExceptionErrorHandler($e);
+			return false;
+		}
+	}
+
+	private function validateEmail($email){
+		$filter_email = filter_var($email, FILTER_SANITIZE_EMAIL);
+		if($email == $filter_email && filter_var($email, FILTER_VALIDATE_EMAIL)){
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public function verifyAdminLogin($email, $password){
+		// Returns true on correct email/password
+		$hash = $this->getHash($email);
+		if(password_verify($password, $hash)){
+			// This makes sure that the person logged in is the same as accessing the restricted page (include 'private/restricted.php' at the top of each page)
+			$radd = $_SERVER['REMOTE_ADDR'];
+			$hxff = getenv('HTTP_X_FORWARDED_FOR');
+			$agent = $_SERVER['HTTP_USER_AGENT'];
+			// $_SESSION['check'] checks against the $check variable in 'private/restricted.php'
+			$_SESSION['check'] = hash('sha256', $radd . $hxff . $agent);
+			$_SESSION['permissions'] = $this->getAdminPermissions($email);
+			$_SESSION['admin'] = true;
+			return true;
+		} else {
+			$_SESSION['error'] = INCORRECT_LOGIN_CREDENTIALS;
+			return false;
+		}
+	}
+
+	private function getHash($email){
+		try {
+			$query = $this->db->prepare('SELECT hash
+				FROM `admin_logins`
+				WHERE email = :email
+			');
+			$query->bindValue(':email', $email, PDO::PARAM_STR);
+			$query->execute();
+			$check = $query->fetch();
+			return $check->hash;
+		} catch (PDOException $e) {
+			ExceptionErrorHandler($e);
+			return false;
+		}
+	}
+
+	private function getAdminPermissions($email){
+		try {
+			$query = $this->db->prepare('SELECT permissions
+				FROM `admin_logins`
+				WHERE email = :email
+			');
+			$query->bindValue(':email', $email, PDO::PARAM_STR);
+			$query->execute();
+			$check = $query->fetch();
+			return $check->permissions;
+		} catch (PDOException $e) {
+			ExceptionErrorHandler($e);
+			return false;
+		}
+	}
 }
