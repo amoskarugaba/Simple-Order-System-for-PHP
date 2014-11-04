@@ -4,11 +4,12 @@ require('private/restricted.php');
 require('class/Customer.php');
 
 $order = new CyanideSystems\OrderSystem\Customer($_SESSION['customer_id']);
-var_dump($_POST);
-/*
+
+
+// createProforma returns the proforma_id
 if($created = $order->createProforma($_POST)){
 	header('Location: view_proforma.php?p=' . $created);
 } else {
-	echo 'meh';
+	$_SESSION['error'] = PROFORMA_CREATION_FAILED;
+	header('Location: order_form.php');
 }
-*/

@@ -14,6 +14,8 @@ include('template/header.php');
 
 			<h2>Order Form</h2>
 
+			<?php echo $user_error; ?>
+
 			<form name="order_form" action="create_proforma.php" method="post">
 				<table>
 					<thead>
