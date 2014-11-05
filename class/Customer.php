@@ -27,7 +27,6 @@ class Customer {
 
 	// Creates proforma, returns proforma_id on success, false on failure
 	public function createProforma($proforma_array){ // $_POST from order form
-		//$delivery_cost = $this->deliveryCost($proforma_array);
 		$this->db->beginTransaction(); // Begin TRANSACTION so that if one query fails, the other will ROLLBACK
 		try {
 			$query = $this->db->prepare('INSERT INTO `proforma_main` (customer_id)
@@ -56,7 +55,8 @@ class Customer {
 			$query = $this->db->prepare('UPDATE `proforma_lines`
 				INNER JOIN `products`
 				ON `products`.sku = `proforma_lines`.product_sku
-				SET `proforma_lines`.line_price = `products`.price, `proforma_lines`.vat_rate = `products`.vat_rate
+				SET `proforma_lines`.line_price = `products`.price,
+					`proforma_lines`.vat_rate = `products`.vat_rate
 				WHERE `proforma_lines`.proforma_id = :proforma_id
 			');
 
@@ -73,27 +73,33 @@ class Customer {
 		}
 	}
 
-
-
-
-
-
 	// Calculates delivery charge (in this example an order with a total (ex. VAT) of £400 or more has no delivery change), each £100 has delivery charge of £4.95)
-	// Note: Yea, I know this is a little specific to my own ends here, so any suggestions?
-	private function deliveryCost($proforma_array){
-		foreach($proforma_array as $sku_value){
-			foreach($sku_value as $price){
-				$total += $price;
-			}
+	// Note: Yea, I know this is a little specific to my own ends here, so any suggestions? I'd quite like to get it a bit more 'generic'...
+	private function deliveryCost($proforma_id){
+		try {
+			$query = $this->db->prepare('SELECT
+				ROUND(total/100,0)*4.95 AS delivery
+				FROM `proforma_main` m
+				JOIN (
+					SELECT `proforma_lines`.customer_id,
+						`proforma_lines`.proforma_id,
+					SUM(quantity*line_price) AS total
+					FROM `proforma_lines`
+					WHERE `proforma_lines`.proforma_id = :proforma_id
+					AND `proforma_lines`.customer_id = :customer_id
+				) AS l ON m.proforma_id = l.proforma_id
+				WHERE m.customer_id = l.customer_id
+				AND total < 400
+			');
+			$query->bindValue(':proforma_id', $proforma_id, PDO::PARAM_INT);
+			$query->bindValue(':customer_id', $this->customer_id, PDO::PARAM_INT);
+			$query->execute();
+			return $query->fetch();
+		} catch (PDOException $e) {
+			ExceptionErrorHandler($e);
+			return false;
 		}
-		// MAKE THIS MORE GENERIC!!
-		$delivery_cost = $total
 	}
-
-
-
-
-
 
 	// Returns all customer's proformas
 	public function getProformas(){
