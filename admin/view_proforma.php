@@ -104,7 +104,7 @@ $proforma_lines = $order->getProformaLines($proforma_id);
 					</tr>
 					<tr>
 						<th><span>Total (Net.)</span></th>
-						<td><span data-prefix>&pound; </span><span><?php echo $proforma->total; ?></span></td>
+						<td><span data-prefix>&pound; </span><span><?php echo $proforma->total_net; ?></span></td>
 					</tr>
 					<tr>
 						<th><span>Total (Gross)</span></th>

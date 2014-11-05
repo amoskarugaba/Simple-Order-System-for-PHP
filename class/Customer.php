@@ -64,6 +64,8 @@ class Customer {
 			$query->execute();
 
 			// UPDATE proforma_main (we could run a JOIN each time, however as the main order details are likely to be called a lot more often than the individual product lines for the order, it makes sense to store this on it's own - plus, it should be easier to work with for some 'stats' etc. on the user or admin. dashboard)
+
+			// Note: The delivery calculation here is really specific to my own operation (ie. delivery is charged at £4.95 per each £100 spent, and if it's over £400 the delivery is free/0.00) - I'll update this at some point when I think of a more 'generic' method.
 			$query = $this->db->prepare('UPDATE `proforma_main` m,
 				(SELECT
 						l.total_net,
@@ -108,7 +110,7 @@ class Customer {
 	// Returns all customer's proformas
 	public function getProformas(){
 		try {
-			$query = $this->db->prepare('SELECT proforma_id, date, customer_id
+			$query = $this->db->prepare('SELECT proforma_id, date, total_net, total_gross, delivery_total, customer_id
 				FROM `proforma_main`
 				WHERE customer_id = :customer_id
 				AND invoiced = 0
@@ -130,32 +132,23 @@ class Customer {
 			$query = $this->db->prepare('SELECT m.proforma_id,
 					m.date,
 					m.discount,
-					total,
-					total_vat_net,
-					total_gross,
-					`customer_details`.email,
-					`customer_details`.firstname,
-					`customer_details`.lastname,
-					`customer_details`.company,
-					`customer_details`.address1,
-					`customer_details`.address2,
-					`customer_details`.town,
-					`customer_details`.county,
-					`customer_details`.postcode,
-					`customer_details`.phone,
-					`customer_details`.notes
-				FROM `customer_details`, `proforma_main` m
-				JOIN (
-					SELECT `proforma_lines`.customer_id,
-					`proforma_lines`.proforma_id,
-					SUM(quantity*line_price) AS total,
-					SUM(quantity*line_price*(vat_rate/100)) AS total_vat_net,
-					SUM(quantity*line_price*(vat_rate/100+1)) AS total_gross
-					FROM `proforma_lines`
-					WHERE `proforma_lines`.proforma_id = :proforma_id
-					AND `proforma_lines`.customer_id = :customer_id
-				) AS l ON m.proforma_id = l.proforma_id
-				WHERE m.customer_id = l.customer_id
+					m.total_net,
+					m.total_vat_net,
+					m.total_gross,
+					c.email,
+					c.firstname,
+					c.lastname,
+					c.company,
+					c.address1,
+					c.address2,
+					c.town,
+					c.county,
+					c.postcode,
+					c.phone,
+					c.notes
+				FROM `customer_details` c, `proforma_main` m
+				WHERE m.customer_id = :customer_id
+				AND m.proforma_id = :proforma_id
 			');
 
 			$query->bindValue(':proforma_id', $proforma_id, PDO::PARAM_INT);
@@ -210,7 +203,7 @@ class Customer {
 	// Returns all invoices for customer
 	public function getInvoices(){
 		try {
-			$query = $this->db->prepare('SELECT invoice_id, date, discount, order_total
+			$query = $this->db->prepare('SELECT invoice_id, date, discount, total_net, total_vat_net, total_gross
 				FROM `invoice_main`
 				WHERE customer_id = :customer_id
 			');
@@ -231,32 +224,23 @@ class Customer {
 			$query = $this->db->prepare('SELECT m.invoice_id,
 					m.date,
 					m.discount,
-					total,
-					total_vat_net,
-					total_gross,
-					`customer_details`.email,
-					`customer_details`.firstname,
-					`customer_details`.lastname,
-					`customer_details`.company,
-					`customer_details`.address1,
-					`customer_details`.address2,
-					`customer_details`.town,
-					`customer_details`.county,
-					`customer_details`.postcode,
-					`customer_details`.phone,
-					`customer_details`.notes
-				FROM `customer_details`, `invoice_main` m
-				JOIN (
-					SELECT `invoice_lines`.customer_id,
-					`invoice_lines`.invoice_id,
-					SUM(quantity*line_price) AS total,
-					SUM(quantity*line_price*(vat_rate/100)) AS total_vat_net,
-					SUM(quantity*line_price*(vat_rate/100+1)) AS total_gross
-					FROM `invoice_lines`
-					WHERE `invoice_lines`.invoice_id = :invoice_id
-					AND `invoice_lines`.customer_id = :customer_id
-				) AS l ON m.invoice_id = l.invoice_id
-				WHERE m.customer_id = l.customer_id
+					m.total_net,
+					m.total_vat_net,
+					m.total_gross,
+					c.email,
+					c.firstname,
+					c.lastname,
+					c.company,
+					c.address1,
+					c.address2,
+					c.town,
+					c.county,
+					c.postcode,
+					c.phone,
+					c.notes
+				FROM `customer_details` c, `invoice_main` m
+				WHERE m.invoice_id = :invoice_id
+				AND m.customer_id = :customer_id
 			');
 			$query->bindValue(':invoice_id', $invoice_id, PDO::PARAM_INT);
 			$query->bindValue(':customer_id', $this->customer_id, PDO::PARAM_INT);

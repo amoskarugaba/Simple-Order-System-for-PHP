@@ -89,33 +89,22 @@ class Admin {
 			$query = $this->db->prepare('SELECT m.proforma_id,
 					m.date,
 					m.discount,
-					total,
-					total_vat_net,
-					total_gross,
-					`customer_details`.email,
-					`customer_details`.firstname,
-					`customer_details`.lastname,
-					`customer_details`.company,
-					`customer_details`.address1,
-					`customer_details`.address2,
-					`customer_details`.town,
-					`customer_details`.county,
-					`customer_details`.postcode,
-					`customer_details`.phone,
-					`customer_details`.notes
-				FROM `customer_details`, `proforma_main` m
-				JOIN (
-					SELECT `proforma_lines`.customer_id,
-					`proforma_lines`.proforma_id,
-					SUM(quantity*line_price) AS total,
-					SUM(quantity*line_price*(vat_rate/100)) AS total_vat_net,
-					SUM(quantity*line_price*(vat_rate/100+1)) AS total_gross
-					FROM `proforma_lines`
-					WHERE `proforma_lines`.proforma_id = :proforma_id
-				) AS l ON m.proforma_id = l.proforma_id
-				WHERE m.customer_id = l.customer_id
-				AND m.proforma_id = :proforma_id
-				AND l.proforma_id = :proforma_id
+					m.total_net,
+					m.total_vat_net,
+					m.total_gross,
+					c.email,
+					c.firstname,
+					c.lastname,
+					c.company,
+					c.address1,
+					c.address2,
+					c.town,
+					c.county,
+					c.postcode,
+					c.phone,
+					c.notes
+				FROM `customer_details` c, `proforma_main` m
+				WHERE m.proforma_id = :proforma_id
 			');
 			$query->bindValue(':proforma_id', $proforma_id, PDO::PARAM_INT);
 			$query->execute();
@@ -150,8 +139,8 @@ class Admin {
 		$this->db->beginTransaction(); // Begin TRANSACTION so that if one query fails, the other will ROLLBACK
 		try {
 			// These can probably be cleaned up a bit and merged into a single SQL statement!
-			$query = $this->db->prepare('INSERT INTO `invoice_main` (discount, delivery, proforma_id, customer_id)
-				SELECT discount, delivery, proforma_id, customer_id
+			$query = $this->db->prepare('INSERT INTO `invoice_main` (total_net, total_vat_net, total_gross, discount, delivery_quantity, delivery_total, proforma_id, customer_id)
+				SELECT total_net, total_vat_net, total_gross, discount, delivery_quantity, delivery_total, proforma_id, customer_id
 				FROM `proforma_main`
 				WHERE proforma_id = :proforma_id
 				AND invoiced = 0
@@ -195,7 +184,7 @@ class Admin {
 
 	public function getInvoices(){
 		try {
-			$query = $this->db->query('SELECT invoice_id, date, customer_id
+			$query = $this->db->query('SELECT invoice_id, total_net, total_vat_net, total_gross, discount, delivery_quantity, delivery_total, customer_id
 				FROM `invoice_main`
 			');
 			return $query->fetchAll();
@@ -211,34 +200,22 @@ class Admin {
 			$query = $this->db->prepare('SELECT m.invoice_id,
 					m.date,
 					m.discount,
-					m.delivery,
-					total,
-					total_vat_net,
-					total_gross,
-					`customer_details`.email,
-					`customer_details`.firstname,
-					`customer_details`.lastname,
-					`customer_details`.company,
-					`customer_details`.address1,
-					`customer_details`.address2,
-					`customer_details`.town,
-					`customer_details`.county,
-					`customer_details`.postcode,
-					`customer_details`.phone,
-					`customer_details`.notes
-				FROM `customer_details`, `invoice_main` m
-				JOIN (
-					SELECT `invoice_lines`.customer_id,
-					`invoice_lines`.invoice_id,
-					SUM(quantity*line_price) AS total,
-					SUM(quantity*line_price*(vat_rate/100)) AS total_vat_net,
-					SUM(quantity*line_price*(vat_rate/100+1)) AS total_gross
-					FROM `invoice_lines`
-					WHERE `invoice_lines`.invoice_id = :invoice_id
-				) AS l ON m.invoice_id = l.invoice_id
-				WHERE m.customer_id = l.customer_id
-				AND m.invoice_id = :invoice_id
-				AND l.invoice_id = :invoice_id
+					m.total_net,
+					m.total_vat_net,
+					m.total_gross,
+					c.email,
+					c.firstname,
+					c.lastname,
+					c.company,
+					c.address1,
+					c.address2,
+					c.town,
+					c.county,
+					c.postcode,
+					c.phone,
+					c.notes
+				FROM `customer_details` c, `invoice_main` m
+				WHERE m.invoice_id = :invoice_id
 			');
 			$query->bindValue(':invoice_id', $invoice_id, PDO::PARAM_INT);
 			$query->execute();

@@ -103,7 +103,7 @@ $invoice_lines = $order->getInvoiceLines($invoice_id);
 					</tr>
 					<tr>
 						<th><span>Total (Net.)</span></th>
-						<td><span data-prefix>&pound; </span><span><?php echo $invoice->total; ?></span></td>
+						<td><span data-prefix>&pound; </span><span><?php echo $invoice->total_net; ?></span></td>
 					</tr>
 					<tr>
 						<th><span>Total (Gross)</span></th>
