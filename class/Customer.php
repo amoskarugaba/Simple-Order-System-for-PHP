@@ -60,7 +60,39 @@ class Customer {
 				WHERE `proforma_lines`.proforma_id = :proforma_id
 			');
 
-			$query->bindValue(':proforma_id', $proforma_id);
+			$query->bindValue(':proforma_id', $proforma_id, PDO::PARAM_INT);
+			$query->execute();
+
+			// UPDATE proforma_main (we could run a JOIN each time, however as the main order details are likely to be called a lot more often than the individual product lines for the order, it makes sense to store this on it's own - plus, it should be easier to work with for some 'stats' etc. on the user or admin. dashboard)
+			$query = $this->db->prepare('UPDATE `proforma_main` m,
+				(SELECT
+						l.total_net,
+						l.total_vat_net,
+						l.total_gross,
+						IF(l.total_net < 400, ROUND(l.total_net/100,0), 1) AS delivery_quantity,
+						IF(l.total_net < 400, ROUND(l.total_net/100,0)*4.95, 0.00) AS delivery_total
+					FROM `proforma_main` m
+					JOIN (
+						SELECT customer_id,
+							proforma_id,
+							SUM(quantity*line_price) AS total_net,
+							SUM(quantity*line_price*(vat_rate/100)) AS total_vat_net,
+							SUM(quantity*line_price*(vat_rate/100+1)) AS total_gross
+						FROM `proforma_lines`
+						WHERE `proforma_lines`.proforma_id = :proforma_id
+						AND `proforma_lines`.customer_id = :customer_id
+					) AS l ON m.proforma_id = l.proforma_id
+					WHERE m.customer_id = l.customer_id
+				) d
+				SET m.total_net = d.total_net,
+					m.total_vat_net = d.total_vat_net,
+					m.total_gross = d.total_gross,
+					m.delivery_quantity = d.delivery_quantity,
+					m.delivery_total = d.delivery_total
+				WHERE m.proforma_id = :proforma_id
+			');
+			$query->bindValue(':proforma_id', $proforma_id, PDO::PARAM_INT);
+			$query->bindValue(':customer_id', $this->customer_id, PDO::PARAM_INT);
 			$query->execute();
 
 			$this->db->commit();
@@ -68,34 +100,6 @@ class Customer {
 			return $proforma_id;
 		} catch (PDOException $e) {
 			$this->db->rollback();
-			ExceptionErrorHandler($e);
-			return false;
-		}
-	}
-
-	// Calculates delivery charge (in this example an order with a total (ex. VAT) of £400 or more has no delivery change), each £100 has delivery charge of £4.95)
-	// Note: Yea, I know this is a little specific to my own ends here, so any suggestions? I'd quite like to get it a bit more 'generic'...
-	private function deliveryCost($proforma_id){
-		try {
-			$query = $this->db->prepare('SELECT
-				ROUND(total/100,0)*4.95 AS delivery
-				FROM `proforma_main` m
-				JOIN (
-					SELECT `proforma_lines`.customer_id,
-						`proforma_lines`.proforma_id,
-					SUM(quantity*line_price) AS total
-					FROM `proforma_lines`
-					WHERE `proforma_lines`.proforma_id = :proforma_id
-					AND `proforma_lines`.customer_id = :customer_id
-				) AS l ON m.proforma_id = l.proforma_id
-				WHERE m.customer_id = l.customer_id
-				AND total < 400
-			');
-			$query->bindValue(':proforma_id', $proforma_id, PDO::PARAM_INT);
-			$query->bindValue(':customer_id', $this->customer_id, PDO::PARAM_INT);
-			$query->execute();
-			return $query->fetch();
-		} catch (PDOException $e) {
 			ExceptionErrorHandler($e);
 			return false;
 		}
