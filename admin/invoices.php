@@ -19,7 +19,7 @@ include('template/header.php');
 			<table>
 				<thead>
 					<tr>
-						<th>Proforma ID</th><th>Proforma Date</th><th>Customer ID</th><th>View Invoice</th>
+						<th>Invoice ID</th><th>Invoice Date</th><th>Customer ID</th><th>View Invoice</th>
 					</tr>
 				</thead>
 				<tbody>

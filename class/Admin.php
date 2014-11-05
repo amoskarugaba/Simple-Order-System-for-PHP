@@ -184,7 +184,7 @@ class Admin {
 
 	public function getInvoices(){
 		try {
-			$query = $this->db->query('SELECT invoice_id, total_net, total_vat_net, total_gross, discount, delivery_quantity, delivery_total, customer_id
+			$query = $this->db->query('SELECT invoice_id, date, total_net, total_vat_net, total_gross, discount, delivery_quantity, delivery_total, customer_id
 				FROM `invoice_main`
 			');
 			return $query->fetchAll();
@@ -426,7 +426,7 @@ class Admin {
 					line_id INT(11) NOT NULL AUTO_INCREMENT,
 					date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
 					product_sku VARCHAR(20) NOT NULL,
-					quantity INT(11) NOT NULL,
+					quantity INT(11) NOT NULL DEFAULT 0,
 					line_price DECIMAL(10, 2) NOT NULL,
 					vat_rate DECIMAL(5, 2) NOT NULL DEFAULT 0.00,
 					customer_id INT(11) NOT NULL,
@@ -447,7 +447,7 @@ class Admin {
 					total_gross DECIMAL(10, 2) NOT NULLL DEFAULT 0.00,
 					discount DECIMAL(5, 2) NOT NULL DEFAULT 0.00,
 					delivery_quantity INT(11) NOT NULL DEFAULT 0,
-					delivery_total DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+					delivery_total DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
 					invoiced TINYINT(1) NOT NULL DEFAULT 0,
 					customer_id INT(11) NOT NULL,
 					PRIMARY KEY (proforma_id),
