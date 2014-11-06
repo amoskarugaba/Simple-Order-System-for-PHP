@@ -12,8 +12,8 @@ $proforma_id = (int)$_GET['p'];
 
 $admin = new CyanideSystems\OrderSystem\Admin();
 
-if($admin->createInvoice($proforma_id)){
-	echo 'Invoice created';
+if($invoice_id = $admin->createInvoice($proforma_id)){
+	header('Location: view_invoice.php?i=' . $invoice_id);
 } else {
-	echo 'Invoice not created';
+	header('Location: proformas.php');
 }

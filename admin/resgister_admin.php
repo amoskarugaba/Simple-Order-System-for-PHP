@@ -10,8 +10,6 @@ include('template/header.php');
 
 			<h2>Register New Administrator</h2>
 
-			<?php echo $user_error; ?>
-
 			<form name="register" action="register_admin_details.php" method="post">
 				<input type="email" id="email" name="email" placeholder="Username (your email address)" required="required" />
 				<input type="password" id="password" name="password" placeholder="Password" minlength="8" maxlength="64" required="required" />

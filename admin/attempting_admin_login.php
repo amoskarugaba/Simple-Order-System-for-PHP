@@ -2,7 +2,7 @@
 require('../private/config.php');
 
 if(!isset($_POST['email']) || !isset($_POST['password'])){
-	$_SESSION['error'] = LOGIN_CREDENTIALS_NOT_ENTERED;
+	$_SESSION['user_message'] = LOGIN_CREDENTIALS_NOT_ENTERED;
 	header('Location: admin_login.php');
 } else {
 	require('../class/Admin.php');

@@ -1,9 +1,8 @@
 <?php
-require('private/config.php');
+require('../private/config.php');
 
 if(!isset($_POST['email']) || !isset($_POST['password'])){
-	$_SESSION['user_message'] = LOGIN_CREDENTIALS_NOT_ENTERED;
-	header('Location: login.php');
+	echo '<p>Please enter your email address and password.</p>';
 } else {
 	require('class/Login.php');
 
@@ -13,9 +12,9 @@ if(!isset($_POST['email']) || !isset($_POST['password'])){
 	$login = new CyanideSystems\OrderSystem\Login();
 
 	if($login->verifyLogin($email, $password)){
-		header('Location: index.php');
+		echo '<p>You are now logged in.</p>';
 	} else {
-		header('Location: login.php');
+		echo '<p>Login unsuccessful.</p>';
 	}
 
 }

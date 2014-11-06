@@ -10,7 +10,7 @@ include('template/header.php');
 
 			<h2>New Product</h2>
 
-			<form action="ajax/newProduct.php" method="post">
+			<form action="add_new_product.php" method="post">
 				<label for="sku">SKU Code</label>
 				<input type="text" id="sku" name="sku" placeholder="SKU" />
 

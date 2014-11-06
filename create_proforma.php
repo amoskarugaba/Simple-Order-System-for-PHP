@@ -10,6 +10,5 @@ $order = new CyanideSystems\OrderSystem\Customer($_SESSION['customer_id']);
 if($created = $order->createProforma($_POST)){
 	header('Location: view_proforma.php?p=' . $created);
 } else {
-	$_SESSION['error'] = PROFORMA_CREATION_FAILED;
 	header('Location: order_form.php');
 }

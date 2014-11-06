@@ -22,8 +22,6 @@ include('template/header.php');
 
 			<h2>Register</h2>
 
-			<?php echo $user_error; ?>
-
 			<form id="customerform" action="registration_success.php" method="post" autocomplete="on">
 
 				<label for="name">Company Contact's First Name</label>

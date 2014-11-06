@@ -37,9 +37,9 @@ define('MAIL_SMTP_SECURITY', 'tls');
 define('MAIL_SMTP_PORT', 587);
 
 // User error handling - any user errors (such as incorrect login credentials) are set in a session for a 'cleaner' feel for the end user
-if(isset($_SESSION['error'])){
-	$user_error = $_SESSION['error'];
-	unset($_SESSION['error']);
+if(isset($_SESSION['user_message'])){
+	$user_message = $_SESSION['user_message'];
+	unset($_SESSION['user_message']);
 } else {
-	$user_error = null;
+	$user_message = null;
 }

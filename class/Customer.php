@@ -302,11 +302,11 @@ class Customer {
 					return false;
 				}
 			} else {
-				$_SESSION['error'] = REGISTRATION_EMAIL_UNAVAILABLE_ERROR; // Returns message if the email address is already in the database
+				$_SESSION['user_message'] = REGISTRATION_EMAIL_UNAVAILABLE_ERROR; // Returns message if the email address is already in the database
 				return false;
 			}
 		} else {
-			$_SESSION['error'] = RESGISTRATION_EMAIL_NOT_VALID; // Returns message if the email address doesn't pass validation (ie. it doesn't look like a real email address)
+			$_SESSION['user_message'] = RESGISTRATION_EMAIL_NOT_VALID; // Returns message if the email address doesn't pass validation (ie. it doesn't look like a real email address)
 			return false;
 		}
 	}

@@ -256,25 +256,25 @@ class Admin {
 				$query->bindValue(':permissions', $permissions, PDO::PARAM_INT);
 				if($query->execute()){
 					// This makes sure that the person logged in is the same as accessing the restricted page (include 'private/restricted.php' at the top of each page)
-					$radd = $_SERVER['REMOTE_ADDR'];
-					$hxff = getenv('HTTP_X_FORWARDED_FOR');
-					$agent = $_SERVER['HTTP_USER_AGENT'];
+					$r = $_SERVER['REMOTE_ADDR'];
+					$h = getenv('HTTP_X_FORWARDED_FOR');
+					$a = $_SERVER['HTTP_USER_AGENT'];
 					// $_SESSION['check'] checks against the $check variable in 'private/restricted.php'
-					$_SESSION['check'] = hash('sha256', 'admin' . $radd . $hxff . $agent);
+					$_SESSION['admin_check'] = hash('sha256', $r . $h . $a);
 					$_SESSION['permissions'] = $permissions;
 					$_SESSION['admin'] = true;
 					return true;
 				} else {
 					error_log('Database Error: Failed to INSERT registration details into `admin_logins`', 0);
-					$_SESSION['error'] = REGISTRATION_DATABASE_INSERT_ERROR; // Returns message if registration NOT successful due to database insert error
+					$_SESSION['user_message'] = REGISTRATION_DATABASE_INSERT_ERROR; // Returns message if registration NOT successful due to database insert error
 					return false;
 				}
 			} else {
-				$_SESSION['error'] = REGISTRATION_EMAIL_UNAVAILABLE_ERROR; // Returns message if the email address is already in the database
+				$_SESSION['user_message'] = REGISTRATION_EMAIL_UNAVAILABLE_ERROR; // Returns message if the email address is already in the database
 				return false;
 			}
 		} else {
-			$_SESSION['error'] = RESGISTRATION_EMAIL_NOT_VALID; // Returns message if the email address doesn't pass validation (ie. it doesn't look like a real email address)
+			$_SESSION['user_message'] = RESGISTRATION_EMAIL_NOT_VALID; // Returns message if the email address doesn't pass validation (ie. it doesn't look like a real email address)
 			return false;
 		}
 	}
@@ -312,16 +312,16 @@ class Admin {
 		$hash = $this->getHash($email);
 		if(password_verify($password, $hash)){
 			// This makes sure that the person logged in is the same as accessing the restricted page (include 'private/restricted.php' at the top of each page)
-			$radd = $_SERVER['REMOTE_ADDR'];
-			$hxff = getenv('HTTP_X_FORWARDED_FOR');
-			$agent = $_SERVER['HTTP_USER_AGENT'];
+			$r = $_SERVER['REMOTE_ADDR'];
+			$h = getenv('HTTP_X_FORWARDED_FOR');
+			$a = $_SERVER['HTTP_USER_AGENT'];
 			// $_SESSION['check'] checks against the $check variable in 'private/restricted.php'
-			$_SESSION['check'] = hash('sha256', 'admin' . $radd . $hxff . $agent);
+			$_SESSION['admin_check'] = hash('sha256', $r . $h . $a);
 			$_SESSION['permissions'] = $this->getAdminPermissions($email);
 			$_SESSION['admin'] = true;
 			return true;
 		} else {
-			$_SESSION['error'] = INCORRECT_LOGIN_CREDENTIALS;
+			$_SESSION['user_message'] = INCORRECT_LOGIN_CREDENTIALS;
 			return false;
 		}
 	}

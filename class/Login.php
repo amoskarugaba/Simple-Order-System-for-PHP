@@ -21,7 +21,7 @@ class Login {
 				$query->bindValue(':hash', $hash, PDO::PARAM_STR);
 				if($query->execute()){
 					if(!$this->sendConfirmation($email)){
-						$_SESSION['error'] = REGISTRATION_SUCCESSFUL_EMAIL_NOT_SENT; // Returns this if registration successful, but confirmation email not sent
+						$_SESSION['user_message'] = REGISTRATION_SUCCESSFUL_EMAIL_NOT_SENT; // Returns this if registration successful, but confirmation email not sent
 					}
 					// This makes sure that the person logged in is the same as accessing the restricted page (include 'private/restricted.php' at the top of each page)
 					$radd = $_SERVER['REMOTE_ADDR'];
@@ -34,15 +34,15 @@ class Login {
 					return true;
 				} else {
 					error_log('Database Error: Failed to INSERT registration details into `site_logins`', 0);
-					$_SESSION['error'] = REGISTRATION_DATABASE_INSERT_ERROR; // Returns message if registration NOT successful due to database insert error
+					$_SESSION['user_message'] = REGISTRATION_DATABASE_INSERT_ERROR; // Returns message if registration NOT successful due to database insert error
 					return false;
 				}
 			} else {
-				$_SESSION['error'] = REGISTRATION_EMAIL_UNAVAILABLE_ERROR; // Returns message if the email address is already in the database
+				$_SESSION['user_message'] = REGISTRATION_EMAIL_UNAVAILABLE_ERROR; // Returns message if the email address is already in the database
 				return false;
 			}
 		} else {
-			$_SESSION['error'] = RESGISTRATION_EMAIL_NOT_VALID; // Returns message if the email address doesn't pass validation (ie. it doesn't look like a real email address)
+			$_SESSION['user_message'] = RESGISTRATION_EMAIL_NOT_VALID; // Returns message if the email address doesn't pass validation (ie. it doesn't look like a real email address)
 			return false;
 		}
 	}
@@ -129,7 +129,7 @@ class Login {
 			$_SESSION['email'] = $email;
 			return true;
 		} else {
-			$_SESSION['error'] = INCORRECT_LOGIN_CREDENTIALS;
+			$_SESSION['user_message'] = INCORRECT_LOGIN_CREDENTIALS;
 			return false;
 		}
 	}
