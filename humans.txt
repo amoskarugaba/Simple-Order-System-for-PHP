@@ -1,0 +1,12 @@
+# humanstxt.org/
+
+# TEAM
+
+    Elliot J. Reed, Technical Director
+
+# TECHNOLOGY COLOPHON
+
+    CSS3, HTML5, PHP 5, MariaDB / MySQL, JavaScript
+    Apache, Fedora (Development) CentOS and Debian (Servers), Geany (Development IDE), Firefox, GNOME, The GIMP
+
+    Note: Only Free and Open Source software are used in this application.

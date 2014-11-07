@@ -4,7 +4,7 @@ require('private/restricted.php');
 include('template/header.php');
 ?>
 
-	<main role="main">
+	<main class="main" role="main">
 
 		<section>
 
