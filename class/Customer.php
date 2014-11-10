@@ -86,9 +86,9 @@ class Customer {
 					) AS l ON m.proforma_id = l.proforma_id
 					WHERE m.customer_id = l.customer_id
 				) d
-				SET m.total_net = d.total_net,
-					m.total_vat_net = d.total_vat_net,
-					m.total_gross = d.total_gross,
+				SET m.total_net = d.total_net+d.delivery_total,
+					m.total_vat_net = d.total_vat_net+(d.delivery_total*0.2),
+					m.total_gross = d.total_gross+(d.delivery_total*1.2),
 					m.delivery_quantity = d.delivery_quantity,
 					m.delivery_total = d.delivery_total
 				WHERE m.proforma_id = :proforma_id

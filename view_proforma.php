@@ -91,7 +91,7 @@ $proforma_lines = $order->getProformaLines($proforma_id);
 						<tr>
 							<td><span><?php echo $proforma->delivery_quantity; ?></span></td>
 							<td><span>Delivery</span></td>
-							<td><span data-prefix>&pound; <?php echo $proforma->delivery_quantity/$proforma->delivery_total; ?></span><span></span></td>
+							<td><span data-prefix>&pound; <?php echo $proforma->delivery_total/$proforma->delivery_quantity; ?></span><span></span></td>
 							<td><span>%</span></td>
 							<td><span data-prefix>&pound; <?php echo $proforma->delivery_total; ?></span><span></span></td>
 						</tr>
