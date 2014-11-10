@@ -88,11 +88,11 @@ $invoice_lines = $order->getInvoiceLines($invoice_id);
 								</tr>
 						<?php } ?>
 						<tr>
-							<td><span>1</span></td>
+							<td><span><?php echo $invoice->delivery_quantity; ?></span></td>
 							<td><span>Delivery</span></td>
-							<td><span data-prefix>&pound; </span><span></span></td>
+							<td><span data-prefix>&pound; <?php echo $invoice->delivery_total/$invoice->delivery_quantity; ?></span><span></span></td>
 							<td><span>%</span></td>
-							<td><span data-prefix>&pound; </span><span></span></td>
+							<td><span data-prefix>&pound; <?php echo $invoice->delivery_total; ?></span><span></span></td>
 						</tr>
 					</tbody>
 				</table>
