@@ -44,11 +44,23 @@ class Customer {
 
 			$query->bindValue(':customer_id', $this->customer_id, PDO::PARAM_INT); // bindValue as the customer_id will remain the same
 			$query->bindParam(':product_sku', $product_sku, PDO::PARAM_STR); // bindParam as the proforma_line will be different for each line
-			$query->bindParam(':quantity', $quantity, PDO::PARAM_STR); // bindParam as the proforma_line will be different for each line
+			$query->bindParam(':quantity', $quantity, PDO::PARAM_INT); // bindParam as the proforma_line will be different for each line
 			$query->bindValue(':proforma_id', $proforma_id, PDO::PARAM_INT); // bindValue as the proforma_id will remain the same
 
+			$stock_query = $this->db->prepare('UPDATE `products`
+				SET stock_quantity = stock_quantity - :quantity
+				WHERE sku = :product_sku
+			');
+
+			$stock_query->bindParam(':product_sku', $product_sku, PDO::PARAM_STR); // bindParam as the proforma_line will be different for each line
+			$stock_query->bindParam(':quantity', $quantity, PDO::PARAM_INT); // bindParam as the proforma_line will be different for each line
+
 			foreach($proforma_array as $product_sku=>$quantity){
-				$query->execute();
+				$quantity = (int)$quantity;
+				if($quantity > 0){ // only INSERT INTO if there's actually an order for that line (ie. quantity is above 0)
+					$query->execute();
+					$stock_query->execute();
+				}
 			}
 
 			// UPDATEs price and VAT rate from `products` table
@@ -86,9 +98,9 @@ class Customer {
 					) AS l ON m.proforma_id = l.proforma_id
 					WHERE m.customer_id = l.customer_id
 				) d
-				SET m.total_net = d.total_net+d.delivery_total,
-					m.total_vat_net = d.total_vat_net+(d.delivery_total*0.2),
-					m.total_gross = d.total_gross+(d.delivery_total*1.2),
+				SET m.total_net = d.total_net,
+					m.total_vat_net = d.total_vat_net,
+					m.total_gross = d.total_gross,
 					m.delivery_quantity = d.delivery_quantity,
 					m.delivery_total = d.delivery_total
 				WHERE m.proforma_id = :proforma_id
