@@ -98,9 +98,9 @@ class Customer {
 					) AS l ON m.proforma_id = l.proforma_id
 					WHERE m.customer_id = l.customer_id
 				) d
-				SET m.total_net = d.total_net,
-					m.total_vat_net = d.total_vat_net,
-					m.total_gross = d.total_gross,
+				SET m.total_net = d.total_net+d.delivery_total,
+					m.total_vat_net = d.total_vat_net+(d.delivery_total*0.2),
+					m.total_gross = d.total_gross+(d.delivery_total*1.2),
 					m.delivery_quantity = d.delivery_quantity,
 					m.delivery_total = d.delivery_total
 				WHERE m.proforma_id = :proforma_id
@@ -206,6 +206,20 @@ class Customer {
 			');
 			$query->bindValue(':customer_id', $this->customer_id, PDO::PARAM_INT);
 			$query->bindValue(':proforma_id', $proforma_id, PDO::PARAM_INT);
+			$query->execute();
+
+			// Add stock quantity back into `products` when proforma is cancelled
+			$query = $this->db-prepare('UPDATE `products` p,
+					(SELECT product_sku, quantity
+					FROM proforma_lines
+					WHERE proforma_id = :proforma_id
+					) l
+				SET p.stock_quantity = p.stock_quantity + l.quantity
+				WHERE p.sku = l.product_sku
+			')
+
+			$query->bindValue(':proforma_id', $proforma_id, PDO::PARAM_INT);
+
 			$query->execute();
 			return true;
 		} catch (PDOException $e) {
